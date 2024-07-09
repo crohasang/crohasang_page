@@ -2,23 +2,14 @@
 
 import { useState } from 'react';
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from './ui/drawer';
+import { Drawer, DrawerClose, DrawerContent } from '../ui/drawer';
 
 const menuItems = [
-  { label: 'Introduce', link: '#' },
-  { label: 'Projects', link: '#' },
-  { label: 'Writing', link: '#' },
-  { label: 'Preferences', link: '#' },
-  { label: 'Contact', link: '#' },
+  { label: 'Introduce', link: '/introduce' },
+  { label: 'Projects', link: '/projects' },
+  { label: 'Writing', link: '/writing' },
+  { label: 'Preferences', link: '/preferences' },
+  { label: 'Contact', link: '/contact' },
 ];
 
 const Header = () => {
@@ -37,12 +28,13 @@ const Header = () => {
           Menu
         </button>
         {menuItems.map((item) => (
-          <button
+          <a
             key={item.label}
+            href={item.link}
             className="px-2 py-2 rounded-lg text-black hover:text-gray-500 hidden md:block"
           >
             {item.label}
-          </button>
+          </a>
         ))}
         <Drawer
           open={isDrawerOpen}
@@ -50,11 +42,11 @@ const Header = () => {
           direction="right"
         >
           <DrawerContent>
-            <a href="#">Introduce</a>
-            <a href="#">Projects</a>
-            <a href="#">Writing</a>
-            <a href="#">Preferences</a>
-            <a href="#">Contact</a>
+            <a href="/introduce">Introduce</a>
+            <a href="/projects">Projects</a>
+            <a href="/writing">Writing</a>
+            <a href="/preferences">Preferences</a>
+            <a href="/contact">Contact</a>
             <DrawerClose onClick={handleDrawerToggle}>Close</DrawerClose>
           </DrawerContent>
         </Drawer>

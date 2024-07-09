@@ -1,0 +1,23 @@
+/* MusicSlide.css */
+
+.carousel-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-container {
+  display: flex;
+}
+
+.carousel-container.animate {
+  animation: slideToLeft 20s linear infinite;
+}
+
+@keyframes slideToLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--carousel-translate));
+  }
+}

@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+
+// 애니메이션 작동을 위해서 dynamic import를 통해 CSR 강제
+import dynamic from 'next/dynamic';
+
 import MusicCard from './MusicCard';
 import slides from '@/constants/Slides';
 import uuid from 'react-uuid';
@@ -71,7 +75,7 @@ const MusicSlide = ({ reverse = false }) => {
       // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거
       carousel.removeEventListener('animationiteration', handleAnimationEnd);
     };
-  }, []);
+  }, [isLoaded]);
 
   const extendedSlides = [...slides, ...slides, ...slides]; // 슬라이드를 3배 확장
 
@@ -102,4 +106,4 @@ const MusicSlide = ({ reverse = false }) => {
   );
 };
 
-export default MusicSlide;
+export default dynamic(() => Promise.resolve(MusicSlide), { ssr: false });

@@ -1,23 +1,22 @@
-/* MusicSlide.css */
-
-.carousel-wrapper {
-  overflow: hidden;
-  width: 100%;
-}
-
 .carousel-container {
   display: flex;
+  transition: transform 1s linear;
+  animation: slide 10s linear infinite;
+}
+
+.carousel-container.reverse {
+  flex-direction: row-reverse;
 }
 
 .carousel-container.animate {
-  animation: slideToLeft 20s linear infinite;
+  animation-play-state: running;
 }
 
-@keyframes slideToLeft {
+@keyframes slide {
   0% {
-    transform: translateX(0);
+    transform: translateX(var(--carousel-translate, 0));
   }
   100% {
-    transform: translateX(var(--carousel-translate));
+    transform: translateX(calc(var(--carousel-translate, 0) * -1));
   }
 }

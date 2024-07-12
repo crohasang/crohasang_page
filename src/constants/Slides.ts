@@ -64,6 +64,31 @@ const slides = [
     songTitle: '우리 같은 사람들',
     artist: '이고도',
   },
+  {
+    albumCover: '/image/album/how-sweet.jpg',
+    songTitle: 'How Sweet',
+    artist: 'NewJeans',
+  },
+  {
+    albumCover: '/image/album/let-you-break-my-heart-again.jpg',
+    songTitle: 'Let You Break My Heart Again',
+    artist: 'Laufey',
+  },
+  {
+    albumCover: '/image/album/rabbit-mask.jpg',
+    songTitle: '토끼탈',
+    artist: '우효',
+  },
+  {
+    albumCover: '/image/album/always-awake.jpg',
+    songTitle: 'Always Awake',
+    artist: '재지팩트(Jazzyfact)',
+  },
+  {
+    albumCover: '/image/album/ringringring.jpg',
+    songTitle: 'ringringring',
+    artist: '설(SURL)',
+  },
 ];
 
 export default slides;

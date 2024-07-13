@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Header from '../components/common/Header';
+import PageTransition from '@/components/common/PageTransition';
 import './globals.css';
 
 const pretendard = localFont({
@@ -24,7 +25,7 @@ export default function RootLayout({
     <html lang="kr" className={`${pretendard.variable}`}>
       <body className={pretendard.className}>
         <Header />
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

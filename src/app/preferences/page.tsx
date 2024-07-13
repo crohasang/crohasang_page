@@ -11,6 +11,7 @@ const Page = () => {
       <div className="mx-4 overflow-x-hidden">
         <div className="text-xl font-bold">Music</div>
         <MusicSlide />
+        <div className="text-xl font-bold">Movie</div>
       </div>
     </>
   );

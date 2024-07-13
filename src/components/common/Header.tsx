@@ -7,9 +7,7 @@ import { Drawer, DrawerClose, DrawerContent } from '../ui/drawer';
 const menuItems = [
   { label: 'Introduce', link: '/introduce' },
   { label: 'Projects', link: '/projects' },
-  { label: 'Writing', link: '/writing' },
   { label: 'Preferences', link: '/preferences' },
-  { label: 'Contact', link: '/contact' },
 ];
 
 const Header = () => {
@@ -44,9 +42,7 @@ const Header = () => {
           <DrawerContent>
             <a href="/introduce">Introduce</a>
             <a href="/projects">Projects</a>
-            <a href="/writing">Writing</a>
             <a href="/preferences">Preferences</a>
-            <a href="/contact">Contact</a>
             <DrawerClose onClick={handleDrawerToggle}>Close</DrawerClose>
           </DrawerContent>
         </Drawer>

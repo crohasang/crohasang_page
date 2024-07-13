@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import MusicCard from './MusicCard';
-import slides from '@/constants/Slides';
+import musicArray from '@/constants/MusicArray';
 import uuid from 'react-uuid';
 import { useAnimation } from 'framer-motion';
 
@@ -20,7 +20,7 @@ const MusicSlide = ({ reverse = false }) => {
 
   const handleImageLoad = () => {
     loadedImageCount.current += 1;
-    if (loadedImageCount.current === slides.length * 3) {
+    if (loadedImageCount.current === musicArray.length * 3) {
       setIsLoaded(true);
     }
   };
@@ -41,23 +41,23 @@ const MusicSlide = ({ reverse = false }) => {
     }
   }, [isLoaded, controls, reverse]);
 
-  const extendedSlides = [...slides, ...slides, ...slides];
+  const extendedMusicArray = [...musicArray, ...musicArray, ...musicArray];
 
   return (
     <div className="overflow-hidden w-full relative">
       <MotionDiv
         ref={carouselRef}
         className="flex"
-        style={{ width: `${extendedSlides.length * 144}px` }}
+        style={{ width: `${extendedMusicArray.length * 144}px` }}
         animate={controls}
         initial={true}
       >
-        {extendedSlides.map((slide) => (
+        {extendedMusicArray.map((musicArray) => (
           <MusicCard
             key={uuid()}
-            albumCover={slide.albumCover}
-            songTitle={slide.songTitle}
-            artist={slide.artist}
+            albumCover={musicArray.albumCover}
+            songTitle={musicArray.songTitle}
+            artist={musicArray.artist}
             onLoad={handleImageLoad}
           />
         ))}

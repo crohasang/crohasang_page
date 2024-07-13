@@ -1,4 +1,4 @@
-const slides = [
+const musicArray = [
   {
     albumCover: '/image/album/newJeans-2.jpg',
     songTitle: 'ETA',
@@ -91,4 +91,4 @@ const slides = [
   },
 ];
 
-export default slides;
+export default musicArray;

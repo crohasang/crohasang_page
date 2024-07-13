@@ -7,7 +7,7 @@ const PageDescriptions: Record<string, PageInfo> = {
   '/introduce': { name: 'Introduce', description: '저를 소개합니다' },
   '/projects': {
     name: 'Projects',
-    description: '진행했던, 진행 중인 프로젝트들',
+    description: '제가 진행했던, 진행 중인 프로젝트들',
   },
   '/preferences': {
     name: 'Preferences',

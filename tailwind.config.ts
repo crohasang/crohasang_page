@@ -67,15 +67,18 @@ const config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
-        slide: {
+        'slide-left': {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        'slide-right': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        slide: 'slide 20s linear infinite',
+        'slide-left': 'slide-left 60s linear infinite',
+        'slide-right': 'slide-right 60s linear infinite',
       },
     },
   },

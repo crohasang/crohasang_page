@@ -30,6 +30,7 @@ const Header = () => {
             width={50}
             height={50}
             className="cursor-pointer"
+            priority
           />
         </Link>
         <div className="flex justify-end space-x-4">

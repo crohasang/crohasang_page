@@ -91,4 +91,52 @@ const musicArray = [
   },
 ];
 
-export default musicArray;
+const musicArray2 = [
+  {
+    albumCover: '/image/album/neighrhood.jpg',
+    songTitle: '이웃에 방해가 되지 않는 선에서',
+    artist: '브로콜리너마저',
+  },
+  {
+    albumCover: '/image/album/trigger.jpg',
+    songTitle: 'Trigger',
+    artist: 'Seori',
+  },
+  {
+    albumCover: '/image/album/what-you-know.jpg',
+    songTitle: 'What You Know',
+    artist: 'Two Door Cinema Club',
+  },
+  {
+    albumCover: '/image/album/hey-kids.jpg',
+    songTitle: 'Hey Kids',
+    artist: 'Molina',
+  },
+  {
+    albumCover: '/image/album/nice-boys.jpg',
+    songTitle: 'Nice Boys',
+    artist: 'TEMPOREX',
+  },
+  {
+    albumCover: '/image/album/over-the-fence.jpg',
+    songTitle: 'Over The Fence',
+    artist: 'Rad Museum',
+  },
+  {
+    albumCover: '/image/album/seasons.jpg',
+    songTitle: 'Seasons',
+    artist: 'wave to earth',
+  },
+  {
+    albumCover: '/image/album/kirari.jpg',
+    songTitle: 'Kirari',
+    artist: 'Fujii Kaze',
+  },
+  {
+    albumCover: '/image/album/amoeba.jpg',
+    songTitle: 'Amoeba',
+    artist: 'Clairo',
+  },
+];
+
+export { musicArray, musicArray2 };

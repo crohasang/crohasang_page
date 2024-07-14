@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import MusicCard from './MusicCard';
-import musicArray from '@/constants/MusicArray';
+import { musicArray } from '@/constants/MusicArray';
 import uuid from 'react-uuid';
 
 const MusicSlide = () => {

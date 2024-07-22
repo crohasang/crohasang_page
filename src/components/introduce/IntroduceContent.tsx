@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { SiTistory } from 'react-icons/si';
+import VideoCarousel from './VideoCarousel';
 
 const IntroduceContent = () => {
   const container = {
@@ -112,6 +113,12 @@ const IntroduceContent = () => {
             </a>
           </motion.div>
         </div>
+      </motion.div>
+
+      <motion.hr variants={item} className="my-12 border-t border-gray-300" />
+
+      <motion.div variants={item} className="mt-12">
+        <VideoCarousel />
       </motion.div>
     </motion.div>
   );

@@ -63,9 +63,16 @@ const IntroduceContent = () => {
             Cho Hasang
           </motion.h1>
 
-          <motion.h2 variants={item} className="text-2xl md:text-3xl mb-6">
+          <motion.h2 variants={item} className="text-2xl md:text-3xl mb-4">
             Web Frontend Developer
           </motion.h2>
+
+          <motion.h3
+            variants={item}
+            className="text-slate-600 font-light text-lg md:text-xl mb-6"
+          >
+            hasang2691@gmail.com
+          </motion.h3>
 
           <motion.div variants={container} className="space-y-3">
             <motion.p variants={item}>
@@ -82,7 +89,8 @@ const IntroduceContent = () => {
               👥 Upcoming President of KUIT, 4th Generation
             </motion.p>
             <motion.p variants={item}>
-              🔤 Treasurer of TIME, University Central Club (2023-2)
+              🔤 Treasurer of TIME, University English Presentation Club
+              (2023-2)
             </motion.p>
           </motion.div>
 

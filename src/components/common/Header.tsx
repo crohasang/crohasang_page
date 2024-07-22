@@ -9,7 +9,6 @@ import { Drawer, DrawerClose, DrawerContent } from '../ui/drawer';
 import logoImage from '../../../public/image/logo/crohasang_logo.png';
 
 const menuItems = [
-  { label: 'Introduce', link: '/introduce' },
   { label: 'Projects', link: '/projects' },
   { label: 'Preferences', link: '/preferences' },
 ];
@@ -55,7 +54,6 @@ const Header = () => {
             direction="right"
           >
             <DrawerContent>
-              <a href="/introduce">Introduce</a>
               <a href="/projects">Projects</a>
               <a href="/preferences">Preferences</a>
               <DrawerClose onClick={handleDrawerToggle}>Close</DrawerClose>

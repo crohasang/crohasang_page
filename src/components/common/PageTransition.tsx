@@ -11,26 +11,29 @@ interface PageTransitionProps {
 
 const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   const pathname = usePathname();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [showContent, setShowContent] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(pathname !== '/');
+  const [showContent, setShowContent] = useState<boolean>(pathname === '/');
   const pageInfo = PageDescriptions[pathname] || { name: '', description: '' };
 
   useEffect(() => {
     if (pathname === '/') {
-      setIsLoading(false);
-      setShowContent(true);
-      return;
+      // 메인 페이지('/')일 경우
+      setIsLoading(false); // 로딩 상태를 즉시 false로 설정
+      setShowContent(true); // 콘텐츠를 즉시 표시
+    } else {
+      // 메인 페이지가 아닌 경우
+      setIsLoading(true); // 로딩 상태를 true로 설정
+      setShowContent(false); // 콘텐츠를 숨김
+
+      // 2초 후에 로딩을 끝내고 콘텐츠를 표시하는 타이머 설정
+      const timer = setTimeout(() => {
+        setIsLoading(false); // 로딩 상태를 false로 변경
+        setShowContent(true); // 콘텐츠를 표시
+      }, 2000);
+
+      // 컴포넌트가 언마운트되거나 pathname이 바뀔 때 타이머를 정리
+      return () => clearTimeout(timer);
     }
-
-    setIsLoading(true);
-    setShowContent(false);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      setShowContent(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
   }, [pathname]);
 
   return (

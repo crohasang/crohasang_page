@@ -1,10 +1,13 @@
-export const metadata = {
-  title: 'crohasang | Introduce',
+import { Metadata } from 'next';
+import IntroduceContent from '@/components/introduce/IntroduceContent';
+
+export const metadata: Metadata = {
+  title: 'crohasang | introduce',
   description: 'Introduce myself',
 };
 
 const Page = () => {
-  return <></>;
+  return <IntroduceContent />;
 };
 
 export default Page;

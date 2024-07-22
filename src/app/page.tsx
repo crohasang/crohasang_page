@@ -1,7 +1,13 @@
-import Image from 'next/image';
+import { Metadata } from 'next';
+import IntroduceContent from '@/components/introduce/IntroduceContent';
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
-  );
-}
+export const metadata: Metadata = {
+  title: 'crohasang',
+  description: 'Portfolio web site of Cho hasang',
+};
+
+const Page = () => {
+  return <IntroduceContent />;
+};
+
+export default Page;

@@ -2,7 +2,7 @@ import MusicSlide from '@/components/preferences/MusicSlide';
 import { musicArray, musicArray2, musicArray3 } from '@/constants/MusicArray';
 
 export const metadata = {
-  title: 'crohasang | preferences',
+  title: 'crohasang | Preferences',
   description: 'Introduce my preferences',
 };
 

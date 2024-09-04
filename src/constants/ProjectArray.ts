@@ -24,6 +24,15 @@ const WebFrontEndArray = [
       '공공데이터를 기반으로 한 AI 맞춤형 코스 추천 서비스(웹 프론트엔드로 참여)',
     link: 'https://github.com/Covigator/Covigator-FE',
   },
+  {
+    title: 'KUIT onboarding page',
+    imageUrl: '/image/projects/kuit_onboarding.png',
+    techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS', 'Next.js'],
+    duration: '2024.08',
+    description:
+      'KUIT(Konkuk University developer club) onboarding page repository',
+    link: 'https://www.konkuk-kuit.com',
+  },
 ];
 
 const NomadCoderArray = [

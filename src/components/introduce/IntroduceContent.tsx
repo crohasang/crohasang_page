@@ -86,7 +86,7 @@ const IntroduceContent = () => {
               👨‍💻 Web Part Leader of KUIT, 3rd Generation
             </motion.p>
             <motion.p variants={item}>
-              👥 Upcoming President of KUIT, 4th Generation
+              👥 President of KUIT, 4th Generation
             </motion.p>
             <motion.p variants={item}>
               🔤 Treasurer of TIME, University English Presentation Club

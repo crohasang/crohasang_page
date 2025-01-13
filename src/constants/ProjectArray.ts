@@ -1,38 +1,46 @@
 const WebFrontEndArray = [
   {
+    title: 'Covigator',
+    imageUrl: '/image/projects/covigator.png',
+    techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS'],
+    duration: '2024.07 ~ 2024.12',
+    description:
+      '공공데이터를 기반으로 한 AI 맞춤형 코스 추천 서비스',
+    link: 'https://github.com/Covigator/Covigator-FE',
+  },
+  {
+    title: 'KUIT Landing Page',
+    imageUrl: '/image/projects/kuit_onboarding.png',
+    techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS', 'Next.js'],
+    duration: '2024.08',
+    description: '건국대학교 기획/개발 동아리 KUIT 랜딩 페이지',
+    link: 'https://www.konkuk-kuit.com',
+  },
+  {
     title: 'MOCU',
     imageUrl: '/image/projects/mocu.png',
     techStack: ['React', 'Javascript', 'TypeScript'],
     duration: '2023.12 ~ 2024.02',
-    description: '모두의 쿠폰, MOCU (웹 프론트엔드로 참여)',
+    description: '모두의 쿠폰, MOCU',
     link: 'https://github.com/MOCU-Frontend/frontend',
   },
   {
-    title: 'PROlog(진행 중)',
+    title: 'kuiz',
+    imageUrl: '/image/projects/kuiz.png',
+    techStack: ['React', 'Javascript', 'TypeScript', 'Emotion'],
+    duration: '2024.11 ~ 2024.12',
+    description: 'UI/UX 디자인 퀴즈 어플리케이션',
+    link: 'https://github.com/crohasang/kuiz',
+  },
+  {
+    title: 'PROlog (미완성)',
     imageUrl: '/image/projects/prolog_capture.png',
     techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS'],
     duration: '2024.02 ~',
-    description: 'CRUD 게시판 구현 프로젝트(웹 프론트엔드로 참여)',
+    description: 'CRUD 게시판 구현 프로젝트',
     link: 'https://github.com/crohasang/prolog',
   },
-  {
-    title: 'Covigator(진행 중)',
-    imageUrl: '/image/projects/covigator_capture.png',
-    techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS'],
-    duration: '2024.07 ~',
-    description:
-      '공공데이터를 기반으로 한 AI 맞춤형 코스 추천 서비스(웹 프론트엔드로 참여)',
-    link: 'https://github.com/Covigator/Covigator-FE',
-  },
-  {
-    title: 'KUIT onboarding page',
-    imageUrl: '/image/projects/kuit_onboarding.png',
-    techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS', 'Next.js'],
-    duration: '2024.08',
-    description:
-      'KUIT(Konkuk University developer club) onboarding page repository',
-    link: 'https://www.konkuk-kuit.com',
-  },
+   
 ];
 
 const NomadCoderArray = [

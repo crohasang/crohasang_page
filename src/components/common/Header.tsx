@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 import { Drawer, DrawerClose, DrawerContent } from '../ui/drawer';
 
-import logoImage from '../../../public/image/logo/crohasang_logo.png';
+const logoImage = 'https://d1faf0kcj4x8qr.cloudfront.net/logo/crohasang_logo.png';
 
 const menuItems = [
   { label: 'Projects', link: '/projects' },

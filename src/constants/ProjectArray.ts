@@ -1,7 +1,7 @@
 const WebFrontEndArray = [
   {
     title: 'Covigator',
-    imageUrl: '/image/projects/covigator.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/covigator.png',
     techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS'],
     duration: '2024.07 ~ 2024.12',
     description:
@@ -10,7 +10,7 @@ const WebFrontEndArray = [
   },
   {
     title: 'KUIT Landing Page',
-    imageUrl: '/image/projects/kuit_onboarding.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/kuit_onboarding.png',
     techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS', 'Next.js'],
     duration: '2024.08',
     description: '건국대학교 기획/개발 동아리 KUIT 랜딩 페이지',
@@ -18,7 +18,7 @@ const WebFrontEndArray = [
   },
   {
     title: 'MOCU',
-    imageUrl: '/image/projects/mocu.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/mocu.png',
     techStack: ['React', 'Javascript', 'TypeScript'],
     duration: '2023.12 ~ 2024.02',
     description: '모두의 쿠폰, MOCU',
@@ -26,7 +26,7 @@ const WebFrontEndArray = [
   },
   {
     title: 'kuiz',
-    imageUrl: '/image/projects/kuiz.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/kuiz.png',
     techStack: ['React', 'Javascript', 'TypeScript', 'Emotion'],
     duration: '2024.11 ~ 2024.12',
     description: 'UI/UX 디자인 퀴즈 어플리케이션',
@@ -34,7 +34,7 @@ const WebFrontEndArray = [
   },
   {
     title: 'PROlog (미완성)',
-    imageUrl: '/image/projects/prolog_capture.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/prolog_capture.png',
     techStack: ['React', 'Javascript', 'TypeScript', 'tailwind CSS'],
     duration: '2024.02 ~',
     description: 'CRUD 게시판 구현 프로젝트',
@@ -46,7 +46,7 @@ const WebFrontEndArray = [
 const NomadCoderArray = [
   {
     title: 'momentum_js',
-    imageUrl: '/image/projects/momentum_js.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/momentum_js.png',
     techStack: ['JavaScript'],
     duration: '2023.08',
     description:
@@ -55,7 +55,7 @@ const NomadCoderArray = [
   },
   {
     title: 'React-Practice',
-    imageUrl: '/image/projects/react-practice.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/react-practice.png',
     techStack: ['React', 'JavaScript'],
     duration: '2023.08',
     description:
@@ -64,7 +64,7 @@ const NomadCoderArray = [
   },
   {
     title: 'ts_hash_generator',
-    imageUrl: '/image/projects/ts_hash_generator.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/ts_hash_generator.png',
     techStack: ['React', 'JavaScript', 'TypeScript'],
     duration: '2023.12',
     description:
@@ -73,7 +73,7 @@ const NomadCoderArray = [
   },
   {
     title: 'twitter-clone-firebase',
-    imageUrl: '/image/projects/twitter-clone-firebase.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/twitter-clone-firebase.png',
     techStack: ['Firebase', 'React', 'JavaScript', 'TypeScript'],
     duration: '2024.02',
     description: '간단한 트위터 클론코딩으로 Firebase 사용법을 익히는 프로젝트',
@@ -84,7 +84,7 @@ const NomadCoderArray = [
 const JetpackComposeArray = [
   {
     title: 'SweatNote',
-    imageUrl: '/image/projects/sweat_note.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/sweat_note.png',
     techStack: ['Kotlin(Jetpack Compose)'],
     duration: '2024.05 ~ 2024.06',
     description:
@@ -93,7 +93,7 @@ const JetpackComposeArray = [
   },
   {
     title: 'EmergencyGuide',
-    imageUrl: '/image/projects/emergency_guide.png',
+    imageUrl: 'https://d1faf0kcj4x8qr.cloudfront.net/projects/emergency_guide.png',
     techStack: ['Kotlin(Jetpack Compose)'],
     duration: '2024.05 ~ 2024.06',
     description: '응급 상황 정보 제공 어플리케이션 제작 프로젝트',

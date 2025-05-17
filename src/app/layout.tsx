@@ -4,7 +4,7 @@ import Header from '../components/common/Header';
 import PageTransition from '@/components/common/PageTransition';
 import './globals.css';
 
-import crohasangLogo from '../../public/image/logo/crohasang_logo.png';
+const crohasangLogoUrl = 'https://d1faf0kcj4x8qr.cloudfront.net/logo/crohasang_logo.png';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   icons: [
     {
       rel: 'icon',
-      url: crohasangLogo.src,
+      url: crohasangLogoUrl,
       type: 'image/png',
     },
   ],

@@ -47,7 +47,7 @@ const IntroduceContent = () => {
           className="w-64 h-64 relative overflow-hidden"
         >
           <Image
-            src="/image/profile_image.JPEG"
+            src="https://d1faf0kcj4x8qr.cloudfront.net/profile/profile.JPG"
             alt="Profile Picture"
             layout="fill"
             objectFit="cover"

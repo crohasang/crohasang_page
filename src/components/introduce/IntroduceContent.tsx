@@ -47,7 +47,7 @@ const IntroduceContent = () => {
           className="w-64 h-64 relative overflow-hidden"
         >
           <Image
-            src="/image/profile_image.JPEG"
+            src="https://d1faf0kcj4x8qr.cloudfront.net/profile/profile.JPG"
             alt="Profile Picture"
             layout="fill"
             objectFit="cover"
@@ -76,7 +76,7 @@ const IntroduceContent = () => {
 
           <motion.div variants={container} className="space-y-3">
             <motion.p variants={item}>
-              🎓 Currently studying Computer Engineering at Konkuk University
+            🎓 Konkuk University, Department of Computer Engineering
             </motion.p>
             <motion.p variants={item}>
               💻 Web Member of KUIT, 2nd Generation (University Development
@@ -89,8 +89,7 @@ const IntroduceContent = () => {
               👥 President of KUIT, 4th Generation
             </motion.p>
             <motion.p variants={item}>
-              🔤 Treasurer of TIME, University English Presentation Club
-              (2023-2)
+              🏢 Web Frontend Intern at Diningcode (2025.03 - 2025.06)
             </motion.p>
           </motion.div>
 

@@ -1,3 +1,27 @@
 {
-  "extends": ["next/core-web-vitals", "prettier"]
+  "root": true,
+  "extends": ["eslint:recommended", "@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "ignorePatterns": ["node_modules/", "dist/", ".next/", "out/"],
+  "overrides": [
+    {
+      "files": ["apps/frontend/**/*"],
+      "env": {
+        "browser": true
+      },
+      "extends": ["next/core-web-vitals", "prettier"]
+    },
+    {
+      "files": ["apps/backend/**/*"],
+      "env": {
+        "node": true
+      },
+      "extends": ["@typescript-eslint/recommended", "prettier"]
+    }
+  ]
 }

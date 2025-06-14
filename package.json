@@ -3,38 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.14",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "framer-motion": "^11.18.2",
-    "lucide-react": "^0.515.0",
-    "next": "^15.3.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^5.5.0",
-    "swiper": "^11.2.8",
-    "tailwind-merge": "^3.3.1",
-    "tailwindcss-animate": "^1.0.7",
-    "uuid": "^11.1.0",
-    "vaul": "^1.1.2"
+    "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:backend\"",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "build": "pnpm -r build",
+    "build:frontend": "pnpm --filter frontend build",
+    "build:backend": "pnpm --filter backend build",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "@types/node": "^24.0.1",
-    "@types/react": "^18.2.7",
-    "@types/react-dom": "^18.2.4",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^9.29.0",
-    "eslint-config-next": "^15.3.3",
-    "eslint-config-prettier": "^10.1.5",
-    "postcss": "^8.5.5",
-    "prettier": "^3.5.3",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3"
+    "concurrently": "^8.2.2"
   }
 }

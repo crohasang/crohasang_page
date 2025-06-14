@@ -76,18 +76,16 @@ const IntroduceContent = () => {
 
           <motion.div variants={container} className="space-y-3">
             <motion.p variants={item}>
-            🎓 Konkuk University, Department of Computer Engineering
+              🎓 Konkuk University, Department of Computer Engineering
             </motion.p>
             <motion.p variants={item}>
-              💻 Web Member of KUIT, 2nd Generation (University Development
-              Club)
+              💻 Web Member, KUIT (Student Developer Community) — Joined in 2nd
+              Term
             </motion.p>
             <motion.p variants={item}>
-              👨‍💻 Web Part Leader of KUIT, 3rd Generation
+              👨‍💻 Web Part Leader, KUIT — 3rd Term
             </motion.p>
-            <motion.p variants={item}>
-              👥 President of KUIT, 4th Generation
-            </motion.p>
+            <motion.p variants={item}>👥 President, KUIT — 4th Term</motion.p>
             <motion.p variants={item}>
               🏢 Web Frontend Intern at Diningcode (2025.03 - 2025.06)
             </motion.p>

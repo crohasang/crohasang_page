@@ -87,7 +87,10 @@ const IntroduceContent = () => {
             </motion.p>
             <motion.p variants={item}>👥 President, KUIT — 4th Term</motion.p>
             <motion.p variants={item}>
-              🏢 Web Frontend Intern at Diningcode (2025.03 - 2025.06)
+              🌱 Web Frontend Intern at Diningcode (2025.03 - 2025.06)
+            </motion.p>
+            <motion.p variants={item}>
+              🏢 Web Frontend Developer at Diningcode (2025.06 - Present)
             </motion.p>
           </motion.div>
 

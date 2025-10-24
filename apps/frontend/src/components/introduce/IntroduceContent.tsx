@@ -52,7 +52,15 @@ const IntroduceContent = () => {
               <FaLinkedin />
             </a>
           </div>
-            
+          
+          <div className="fixed bottom-4 left-4 md:bottom-8 md:left-8 flex flex-col space-y-2">
+          <Link
+            href="/post"
+            className="text-black hover:text-gray-600 transition-colors"
+          >
+            POST
+          </Link>
+      </div>
         </div>
       </div>
     </div>

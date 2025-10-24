@@ -3,10 +3,6 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import Link from 'next/link';
 
 const IntroduceContent = () => {
-  const menuItems = [
-    { label: 'Projects', link: '/projects' },
-    { label: 'Preferences', link: '/preferences' },
-  ];
 
   return (
     <div
@@ -26,9 +22,9 @@ const IntroduceContent = () => {
             Cho Hasang
           </h1>
 
-          <h2 className="text-2xl md:text-3xl mb-2 text-white">
-            Web Frontend Developer
-          </h2>
+          <div className="text-lg md:text-xl mb-2 text-white">
+            Web Developer
+          </div>
 
           <div className="mt-6 flex justify-end space-x-4">
             <a
@@ -58,18 +54,6 @@ const IntroduceContent = () => {
           </div>
             
         </div>
-      </div>
-
-      <div className="fixed bottom-4 left-4 md:bottom-8 md:left-8 flex flex-col space-y-2">
-        {menuItems.map((item) => (
-          <Link
-            key={item.label}
-            href={item.link}
-            className="text-black hover:text-gray-600 transition-colors"
-          >
-            {item.label}
-          </Link>
-        ))}
       </div>
     </div>
   );

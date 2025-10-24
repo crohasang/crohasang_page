@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import Header from '../components/common/Header';
-import PageTransition from '@/components/common/PageTransition';
 import './globals.css';
 
 const crohasangLogoUrl = 'https://d1faf0kcj4x8qr.cloudfront.net/logo/crohasang_logo.png';
@@ -15,7 +13,7 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   title: 'crohasang',
-  description: 'page that introduce crohasang',
+  description: 'Personal website of crohasang',
   icons: [
     {
       rel: 'icon',
@@ -33,8 +31,7 @@ export default function RootLayout({
   return (
     <html lang="kr" className={`${pretendard.variable}`}>
       <body className={pretendard.className}>
-        <Header />
-        <PageTransition>{children}</PageTransition>
+        {children}
       </body>
     </html>
   );

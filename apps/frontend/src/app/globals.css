@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    /* 배경색을 아주 연한 회색으로 */
+    /* background: light gray */
     --background: 0 0% 90%;
     --foreground: 222.2 84% 4.9%;
 

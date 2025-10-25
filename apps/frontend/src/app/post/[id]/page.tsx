@@ -22,7 +22,7 @@ const PostDetailPage = async ({ params }: Props) => {
   const kstDate = convertUTCtoKST(post.created_at);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <Link href="/post">
           <button className="mb-6 text-black-600 hover:text-black-800 font-semibold">

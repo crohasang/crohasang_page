@@ -16,7 +16,7 @@ const Page = async () => {
   const posts = await getPosts();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
         
         <div className="space-y-0">

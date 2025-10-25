@@ -45,11 +45,10 @@ const PostDetailPage = async ({ params }: Props) => {
             {kstDate}
           </p>
 
-          <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap prose-p:my-2 prose-h2:my-3 prose-h3:my-2">
+          <div className="max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               components={{
-                p: ({node, ...props}: any) => <p className="whitespace-pre-wrap" {...props} />,
                 h1: ({node, ...props}: any) => <h1 className="text-3xl font-bold mt-6 mb-2" {...props} />,
                 h2: ({node, ...props}: any) => <h2 className="text-2xl font-bold mt-4 mb-2" {...props} />,
                 h3: ({node, ...props}: any) => <h3 className="text-xl font-bold mt-3 mb-1" {...props} />,
@@ -77,14 +76,20 @@ const PostDetailPage = async ({ params }: Props) => {
                     <em className="italic text-gray-700" {...props} />
                 ),
                 ul: ({node, ...props}: any) => (
-                    <ul className="list-disc list-inside my-4 space-y-2" {...props} />
+                    <ul className="list-disc list-inside space-y-0" {...props} />
                 ),
                 ol: ({node, ...props}: any) => (
-                    <ol className="list-decimal list-inside my-4 space-y-2" {...props} />
+                    <ol className="list-decimal list-inside space-y-0" {...props} />
                 ),
                 li: ({node, ...props}: any) => (
-                    <li className="ml-4" {...props} />
+                    <li className="my-0" {...props} />
                 ),
+                p: ({node, ...props}: any) => {
+                  const isInsideLi = node?.parent?.type === 'listItem';
+                  return isInsideLi ? 
+                    <span className="whitespace-pre-wrap" {...props} /> :
+                    <p className="whitespace-pre-wrap my-0" {...props} />;
+                },
               }}
             >
               {post.body}

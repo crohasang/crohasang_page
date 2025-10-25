@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { convertUTCtoKSTDate } from '@/lib/dateUtils';
 
 const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
 
@@ -14,13 +15,14 @@ async function getPosts() {
 
 const Page = async () => {
   const posts = await getPosts();
+  const sortedPosts = posts.sort((a: any, b: any) => b.id - a.id);
 
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
         
         <div className="space-y-0">
-          {posts.map((post: any) => (
+          {sortedPosts.map((post: any) => (
             <Link key={post.id} href={`/post/${post.id}`}>
               <div className="group border-b border-gray-200 hover:bg-blue-50 transition-colors py-4 px-4 cursor-pointer">
                 <div className="flex items-center justify-between gap-4">
@@ -35,11 +37,7 @@ const Page = async () => {
                     </div>
                   </div>
                   <p className="text-xs text-gray-500 whitespace-nowrap">
-                    {new Date(post.created_at).toLocaleDateString('ko-KR', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
+                    {convertUTCtoKSTDate(post.created_at)}
                   </p>
                 </div>
               </div>

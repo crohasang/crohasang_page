@@ -48,3 +48,9 @@ next-env.d.ts
 
 # NestJS specific (for backend)
 /apps/*/dist/
+
+# 데이터 파일 제외
+data/
+*.html
+
+scripts/

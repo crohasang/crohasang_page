@@ -28,7 +28,7 @@ export default function Header({ hideOnHome = false }: HeaderProps) {
   }
 
   return (
-    <header className="sticky bg-transparent top-0 z-50 w-full">
+    <header className="fixed bg-transparent top-0 z-50 w-full">
       <div className="mx-auto px-4 py-4 flex items-center justify-between">
         {/* 로고 */}
         <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">

@@ -4,17 +4,18 @@ import { RowDataPacket } from 'mysql2/promise';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { displayId: string } }
+  { params }: { params: Promise<{ displayId: string }> }
 ) {
   try {
+    const { displayId } = await params;
     const connection = await pool.getConnection();
     const [rows] = await connection.query<RowDataPacket[]>(
       'SELECT * FROM posts ORDER BY created_at DESC'
     );
     connection.release();
     
-    const displayId = parseInt(params.displayId);
-    const postIndex = rows.length - displayId;
+    const displayIdNum = parseInt(displayId);
+    const postIndex = rows.length - displayIdNum;
     
     if (postIndex < 0 || postIndex >= rows.length) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });

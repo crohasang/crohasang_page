@@ -14,22 +14,21 @@ async function getPosts() {
 }
 
 const Page = async () => {
-  const posts = await getPosts();
-  const sortedPosts = posts.sort((a: any, b: any) => b.id - a.id);
+  const displayPosts = await getPosts();
 
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
         
         <div className="space-y-0">
-          {sortedPosts.map((post: any) => (
-            <Link key={post.id} href={`/post/${post.id}`}>
+          {displayPosts.map((post: any) => (
+            <Link key={post.displayId} href={`/post/${post.displayId}`}>
               <div className="group border-b border-gray-200 hover:bg-blue-50 transition-colors py-4 px-4 cursor-pointer">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap">
-                        #{post.id}
+                      <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap w-12 text-center">
+                        #{post.displayId}
                       </span>
                       <h2 className="text-base font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
                         {post.title}
@@ -48,5 +47,4 @@ const Page = async () => {
     </div>
   );
 };
-
 export default Page;

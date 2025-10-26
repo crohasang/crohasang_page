@@ -4,21 +4,23 @@ import { RowDataPacket } from 'mysql2/promise';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { displayId: string } }
 ) {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.query<RowDataPacket[]>(
-      'SELECT * FROM posts WHERE id = ?',
-      [params.id]
+      'SELECT * FROM posts ORDER BY created_at DESC'
     );
     connection.release();
     
-    if (rows.length === 0) {
+    const displayId = parseInt(params.displayId);
+    const postIndex = rows.length - displayId;
+    
+    if (postIndex < 0 || postIndex >= rows.length) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
     
-    return NextResponse.json(rows[0]);
+    return NextResponse.json(rows[postIndex]);
   } catch (error) {
     console.error('DB 에러:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);

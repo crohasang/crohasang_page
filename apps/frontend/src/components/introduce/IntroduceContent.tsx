@@ -1,102 +1,37 @@
-'use client';
-
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { SiTistory } from 'react-icons/si';
-import VideoCarousel from './VideoCarousel';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import Link from 'next/link';
 
 const IntroduceContent = () => {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: -20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: 'spring',
-        stiffness: 50,
-        damping: 10,
-      },
-    },
-  };
 
   return (
-    <motion.div
-      className="mx-auto px-4 py-8 max-w-4xl"
-      variants={container}
-      initial="hidden"
-      animate="show"
+    <div
+      className="fixed inset-0 bg-cover bg-center"
+      style={{
+        backgroundImage: `url('https://d1faf0kcj4x8qr.cloudfront.net/background/blue_sky.jpg')`,
+      }}
     >
-      <motion.div
-        variants={item}
-        className="flex flex-col md:flex-row items-center md:items-start space-y-8 md:space-y-0 md:space-x-8"
+      <div
+        className="flex justify-end items-start h-full pr-4 pt-4 md:pr-16 md:pt-16"
       >
-        <motion.div
-          variants={item}
-          className="w-64 h-64 relative overflow-hidden"
-        >
-          <Image
-            src="https://d1faf0kcj4x8qr.cloudfront.net/profile/profile.JPG"
-            alt="Profile Picture"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
-          />
-        </motion.div>
-
-        <div className="flex-1">
-          <motion.h1
-            variants={item}
-            className="text-3xl md:text-4xl font-bold mb-4"
+        <div className="text-right">
+          
+          <h1
+            className="text-3xl md:text-4xl mt-2 mb-2 text-white"
           >
             Cho Hasang
-          </motion.h1>
+          </h1>
 
-          <motion.h2 variants={item} className="text-2xl md:text-3xl mb-4">
-            Web Frontend Developer
-          </motion.h2>
+          <div className="text-lg md:text-xl mb-2 text-white">
+            Web Developer
+          </div>
 
-          <motion.h3
-            variants={item}
-            className="text-slate-600 font-light text-lg md:text-xl mb-6"
-          >
-            hasang2691@gmail.com
-          </motion.h3>
-
-          <motion.div variants={container} className="space-y-3">
-            <motion.p variants={item}>
-              🎓 Konkuk University, Department of Computer Engineering
-            </motion.p>
-            <motion.p variants={item}>
-              💻 Web Member, KUIT (Student Developer Community) — Joined in 2nd
-              Term
-            </motion.p>
-            <motion.p variants={item}>
-              👨‍💻 Web Part Leader, KUIT — 3rd Term
-            </motion.p>
-            <motion.p variants={item}>👥 President, KUIT — 4th Term</motion.p>
-            <motion.p variants={item}>
-              🏢 Web Frontend Intern at Diningcode (2025.03 - 2025.06)
-            </motion.p>
-          </motion.div>
-
-          <motion.div variants={item} className="mt-6 flex space-x-4">
+          <div className="mt-6 flex justify-end space-x-4">
             <a
               href="https://quickchabun.tistory.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-3xl text-gray-700 hover:text-gray-900 transition-colors"
+              className="text-3xl text-white hover:text-gray-200 transition-colors"
             >
               <SiTistory />
             </a>
@@ -104,7 +39,7 @@ const IntroduceContent = () => {
               href="https://github.com/crohasang"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-3xl text-gray-700 hover:text-gray-900 transition-colors"
+              className="text-3xl text-white hover:text-gray-200 transition-colors"
             >
               <FaGithub />
             </a>
@@ -112,20 +47,23 @@ const IntroduceContent = () => {
               href="https://www.linkedin.com/in/hasang-cho/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-3xl text-gray-700 hover:text-gray-900 transition-colors"
+              className="text-3xl text-white hover:text-gray-200 transition-colors"
             >
               <FaLinkedin />
             </a>
-          </motion.div>
+          </div>
+          
+          <div className="fixed bottom-4 left-4 md:bottom-8 md:left-8 flex flex-col space-y-2">
+          <Link
+            href="/post"
+            className="text-black hover:text-gray-600 transition-colors"
+          >
+            POST
+          </Link>
+      </div>
         </div>
-      </motion.div>
-
-      <motion.hr variants={item} className="my-12 border-t border-gray-300" />
-
-      <motion.div variants={item} className="mt-12">
-        <VideoCarousel />
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

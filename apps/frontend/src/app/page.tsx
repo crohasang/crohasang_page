@@ -3,7 +3,7 @@ import IntroduceContent from '@/components/introduce/IntroduceContent';
 
 export const metadata: Metadata = {
   title: 'crohasang',
-  description: 'Portfolio web site of Cho hasang',
+  description: 'Personal website of crohasang',
 };
 
 const Page = () => {

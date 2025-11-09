@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2/promise';
+
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001';
 
 export async function GET(
   req: NextRequest,
@@ -8,22 +8,21 @@ export async function GET(
 ) {
   try {
     const { displayId } = await params;
-    const connection = await pool.getConnection();
-    const [rows] = await connection.query<RowDataPacket[]>(
-      'SELECT * FROM posts ORDER BY created_at DESC'
-    );
-    connection.release();
-    
-    const displayIdNum = parseInt(displayId);
-    const postIndex = rows.length - displayIdNum;
-    
-    if (postIndex < 0 || postIndex >= rows.length) {
-      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    const response = await fetch(`${BACKEND_URL}/posts/${displayId}`, {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+      }
+      throw new Error(`Backend responded with status: ${response.status}`);
     }
-    
-    return NextResponse.json(rows[postIndex]);
+
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('DB 에러:', error);
+    console.error('Backend 에러:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }

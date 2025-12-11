@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { createFederation, Person, Follow, Undo } from '@fedify/fedify';
-import { MemoryKvStore } from '@fedify/fedify/kv';
+import { MemoryKvStore } from '@fedify/fedify';
+import { Temporal } from '@js-temporal/polyfill';
 import { ActorService } from './actor.service';
 import { KeypairService } from './keypair.service';
 import { InboxService } from './inbox.service';
@@ -22,7 +23,6 @@ export class FedifyService implements OnModuleInit {
     });
 
     this.setupActorDispatcher();
-    this.setupKeyPairsDispatcher();
     this.setupInboxListeners();
     this.setupOutbox();
     this.setupFollowersDispatcher();
@@ -37,8 +37,8 @@ export class FedifyService implements OnModuleInit {
       console.log('Creating local actor: crohasang');
       await this.actorService.createLocalActor({
         username: 'crohasang',
-        display_name: process.env.ACTOR_DISPLAY_NAME || 'Hasang Cho',
-        bio: process.env.ACTOR_BIO || 'Software Engineer & Blogger',
+        display_name: process.env.ACTOR_DISPLAY_NAME || 'crohasang',
+        bio: process.env.ACTOR_BIO || 'Web Developer',
       });
     }
   }
@@ -48,44 +48,44 @@ export class FedifyService implements OnModuleInit {
    * /users/{identifier} 경로로 액터 정보 제공
    */
   private setupActorDispatcher() {
-    this.federation.setActorDispatcher('/users/{identifier}', async (ctx, identifier) => {
-      const actor = await this.actorService.getLocalActor(identifier);
+    this.federation
+      .setActorDispatcher('/users/{identifier}', async (ctx, identifier) => {
+        const actor = await this.actorService.getLocalActor(identifier);
 
-      if (!actor) {
-        return null;
-      }
+        if (!actor) {
+          return null;
+        }
 
-      return new Person({
-        id: ctx.getActorUri(identifier),
-        name: actor.display_name,
-        preferredUsername: actor.username,
-        summary: actor.bio,
-        inbox: ctx.getInboxUri(identifier),
-        outbox: ctx.getOutboxUri(identifier),
-        followers: ctx.getFollowersUri(identifier),
-        url: new URL(actor.url || ''),
-        published: actor.created_at,
+        // 필요 시 키 쌍을 미리 확보 (publicKey, assertionMethods 등에 활용 가능)
+        const keyPairs = await this.keypairService.ensureKeyPairs(actor.id);
+        void keyPairs; // 현재는 사용하지 않지만, 추후 Person 속성에 활용 가능
+
+        return new Person({
+          id: ctx.getActorUri(identifier),
+          name: actor.display_name,
+          preferredUsername: actor.username,
+          summary: actor.bio,
+          inbox: ctx.getInboxUri(identifier),
+          outbox: ctx.getOutboxUri(identifier),
+          followers: ctx.getFollowersUri(identifier),
+          url: new URL(actor.url || ''),
+          published: actor.created_at
+            ? Temporal.Instant.fromEpochMilliseconds(actor.created_at.getTime())
+            : null,
+        });
+      })
+      .setKeyPairsDispatcher(async (ctx, identifier) => {
+        const actor = await this.actorService.getLocalActor(identifier);
+
+        if (!actor) {
+          return [];
+        }
+
+        // 키 쌍이 없으면 생성
+        const keyPairs = await this.keypairService.ensureKeyPairs(actor.id);
+
+        return keyPairs;
       });
-    });
-  }
-
-  /**
-   * Key Pairs Dispatcher 설정
-   * 액터의 암호화 키 쌍 제공
-   */
-  private setupKeyPairsDispatcher() {
-    this.federation.setKeyPairsDispatcher('/users/{identifier}', async (ctx, identifier) => {
-      const actor = await this.actorService.getLocalActor(identifier);
-
-      if (!actor) {
-        return [];
-      }
-
-      // 키 쌍이 없으면 생성
-      const keyPairs = await this.keypairService.ensureKeyPairs(actor.id);
-
-      return keyPairs;
-    });
   }
 
   /**
@@ -139,7 +139,8 @@ export class FedifyService implements OnModuleInit {
    * 팔로워 목록 제공
    */
   private setupFollowersDispatcher() {
-    this.federation.setFollowersDispatcher(
+  this.federation
+    .setFollowersDispatcher(
       '/users/{identifier}/followers',
       async (ctx, identifier, cursor) => {
         const actor = await this.actorService.getLocalActor(identifier);
@@ -148,29 +149,37 @@ export class FedifyService implements OnModuleInit {
           return null;
         }
 
-        const followers = await this.inboxService.getFollowers(actor.id);
+        const follows = await this.inboxService.getFollowers(actor.id);
+
+        const recipients = await Promise.all(
+          follows.map(async (f) => {
+            const followerActor = await this.actorService.getActorById(f.follower_id);
+            if (!followerActor?.inbox_url) {
+              return null;
+            }
+            return {
+              id: new URL(f.follower_id),
+              inboxId: new URL(followerActor.inbox_url),
+            };
+          }),
+        );
 
         return {
-          items: followers.map((f) => new URL(f.follower_id)),
+          items: recipients.filter(
+            (r): r is { id: URL; inboxId: URL } => r !== null,
+          ),
         };
       },
-    );
-
-    // 팔로워 카운터
-    this.federation.setCounter(
-      '/users/{identifier}/followers',
-      async (ctx, identifier) => {
-        const actor = await this.actorService.getLocalActor(identifier);
-
-        if (!actor) {
-          return 0;
-        }
-
-        const followers = await this.inboxService.getFollowers(actor.id);
-        return followers.length;
-      },
-    );
-  }
+    )
+    .setCounter(async (ctx, identifier) => {
+      const actor = await this.actorService.getLocalActor(identifier);
+      if (!actor) {
+        return 0;
+      }
+      const follows = await this.inboxService.getFollowers(actor.id);
+      return follows.length;
+    });
+}
 
   /**
    * Federation 객체 반환

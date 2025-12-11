@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
+import { FedifyModule } from './fedify/fedify.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PostsModule } from './posts/posts.module';
       synchronize: false,
     }),
     PostsModule,
+    FedifyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

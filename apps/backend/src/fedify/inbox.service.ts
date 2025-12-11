@@ -4,7 +4,11 @@ import { Repository } from 'typeorm';
 import { Follow } from './entities/follow.entity';
 import { InboxActivity } from './entities/inbox-activity.entity';
 import { ActorService } from './actor.service';
-import type { Context, Follow as FedifyFollow, Undo } from '@fedify/fedify';
+import { Context, Follow as FedifyFollow, Undo } from '@fedify/fedify';
+
+function isFollowActivity(obj: unknown): obj is FedifyFollow {
+  return obj instanceof FedifyFollow;
+}
 
 @Injectable()
 export class InboxService {
@@ -47,12 +51,15 @@ export class InboxService {
       if (followerActor) {
         await this.actorService.createOrUpdateRemoteActor({
           id: followerId,
-          username: followerActor.preferredUsername,
+          username:
+            typeof followerActor.preferredUsername === 'string'
+              ? followerActor.preferredUsername
+              : followerActor.preferredUsername?.toString(),
           display_name: followerActor.name?.toString(),
           bio: followerActor.summary?.toString(),
           inbox_url: followerActor.inboxId?.href,
-          url: followerActor.url?.href,
-          type: followerActor.type || 'Person',
+          url: followerActor.url ? String(followerActor.url.href) : undefined,
+          type: 'Person',
         });
       }
 
@@ -86,47 +93,42 @@ export class InboxService {
    * 언팔로우할 때
    */
   async handleUndo(ctx: Context<void>, undo: Undo): Promise<void> {
-    try {
-      const actorId = undo.actorId?.href;
-      const undoObject = await undo.getObject();
+  try {
+    const actorId = undo.actorId?.href;
+    const undoObject = await undo.getObject(); // 여기서 Activity로 타입 지정하지 않기
 
-      if (!actorId || !undoObject) {
-        console.error('Invalid Undo activity');
-        return;
-      }
-
-      console.log(`📥 Received Undo from: ${actorId}`);
-
-      // Follow Undo인 경우
-      if (undoObject.type === 'Follow') {
-        const followObject = undoObject as FedifyFollow;
-        const followingId = followObject.objectId?.href;
-
-        if (followingId) {
-          // Follow 관계 삭제
-          await this.followRepository.delete({
-            follower_id: actorId,
-            following_id: followingId,
-          });
-
-          console.log(`✅ Unfollow processed: ${actorId} -> ${followingId}`);
-        }
-      }
-
-      // Inbox 활동 로그 저장
-      await this.inboxActivityRepository.save({
-        activity_id: undo.id?.href || `undo-${Date.now()}`,
-        type: 'Undo',
-        actor_id: actorId,
-        object_id: undoObject.id?.href,
-        raw_data: undo,
-        processed: true,
-      });
-    } catch (error) {
-      console.error('Error handling Undo activity:', error);
-      throw error;
+    if (!actorId || !undoObject) {
+      console.error('Invalid Undo activity');
+      return;
     }
+
+    console.log(`📥 Received Undo from: ${actorId}`);
+
+    if (isFollowActivity(undoObject)) {
+      const followingId = undoObject.objectId?.href;
+      if (followingId) {
+        await this.followRepository.delete({
+          follower_id: actorId,
+          following_id: followingId,
+        });
+        console.log(`✅ Unfollow processed: ${actorId} -> ${followingId}`);
+      }
+    }
+
+    await this.inboxActivityRepository.save({
+      activity_id: undo.id?.href || `undo-${Date.now()}`,
+      type: 'Undo',
+      actor_id: actorId,
+      object_id: undoObject.id?.href,
+      raw_data: undo,
+      processed: true,
+    });
+  } catch (error) {
+    console.error('Error handling Undo activity:', error);
+    throw error;
   }
+}
+
 
   /**
    * 팔로워 목록 조회

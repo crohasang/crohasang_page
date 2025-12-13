@@ -1,6 +1,6 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { createFederation, Person, Follow, Undo } from '@fedify/fedify';
-import { MemoryKvStore } from '@fedify/fedify';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Federation, Person, Follow, Undo } from '@fedify/fedify';
+import { FEDIFY_FEDERATION } from '@fedify/nestjs';
 import { Temporal } from '@js-temporal/polyfill';
 import { ActorService } from './actor.service';
 import { KeypairService } from './keypair.service';
@@ -9,19 +9,14 @@ import { OutboxService } from './outbox.service';
 
 @Injectable()
 export class FedifyService implements OnModuleInit {
-  private federation: ReturnType<typeof createFederation<void>>;
-
   constructor(
+    @Inject(FEDIFY_FEDERATION)
+    private federation: Federation<void>,
     private actorService: ActorService,
     private keypairService: KeypairService,
     private inboxService: InboxService,
     private outboxService: OutboxService,
   ) {
-    // Federation 객체 생성
-    this.federation = createFederation<void>({
-      kv: new MemoryKvStore(), // TODO: 프로덕션에서는 Redis 사용
-    });
-
     this.setupActorDispatcher();
     this.setupInboxListeners();
     this.setupOutbox();
@@ -29,7 +24,7 @@ export class FedifyService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    console.log('🚀 Fedify service initialized');
+    console.log(' Fedify service initialized');
 
     // 로컬 액터가 없으면 생성
     const localActor = await this.actorService.getLocalActor('crohasang');
@@ -159,53 +154,45 @@ export class FedifyService implements OnModuleInit {
    * 팔로워 목록 제공
    */
   private setupFollowersDispatcher() {
-  this.federation
-    .setFollowersDispatcher(
-      '/users/{identifier}/followers',
-      async (ctx, identifier, cursor) => {
+    this.federation
+      .setFollowersDispatcher(
+        '/users/{identifier}/followers',
+        async (ctx, identifier, cursor) => {
+          const actor = await this.actorService.getLocalActor(identifier);
+
+          if (!actor) {
+            return null;
+          }
+
+          const follows = await this.inboxService.getFollowers(actor.id);
+
+          const recipients = await Promise.all(
+            follows.map(async (f) => {
+              const followerActor = await this.actorService.getActorById(f.follower_id);
+              if (!followerActor?.inbox_url) {
+                return null;
+              }
+              return {
+                id: new URL(f.follower_id),
+                inboxId: new URL(followerActor.inbox_url),
+              };
+            }),
+          );
+
+          return {
+            items: recipients.filter(
+              (r): r is { id: URL; inboxId: URL } => r !== null,
+            ),
+          };
+        },
+      )
+      .setCounter(async (ctx, identifier) => {
         const actor = await this.actorService.getLocalActor(identifier);
-
         if (!actor) {
-          return null;
+          return 0;
         }
-
         const follows = await this.inboxService.getFollowers(actor.id);
-
-        const recipients = await Promise.all(
-          follows.map(async (f) => {
-            const followerActor = await this.actorService.getActorById(f.follower_id);
-            if (!followerActor?.inbox_url) {
-              return null;
-            }
-            return {
-              id: new URL(f.follower_id),
-              inboxId: new URL(followerActor.inbox_url),
-            };
-          }),
-        );
-
-        return {
-          items: recipients.filter(
-            (r): r is { id: URL; inboxId: URL } => r !== null,
-          ),
-        };
-      },
-    )
-    .setCounter(async (ctx, identifier) => {
-      const actor = await this.actorService.getLocalActor(identifier);
-      if (!actor) {
-        return 0;
-      }
-      const follows = await this.inboxService.getFollowers(actor.id);
-      return follows.length;
-    });
-}
-
-  /**
-   * Federation 객체 반환
-   * main.ts에서 미들웨어로 사용
-   */
-  getFederation() {
-    return this.federation;
+        return follows.length;
+      });
   }
 }

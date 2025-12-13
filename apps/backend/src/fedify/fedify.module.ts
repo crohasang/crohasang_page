@@ -30,4 +30,4 @@ import { OutboxService } from './outbox.service';
     OutboxService,
   ],
 })
-export class FedifyModule {}
+export class FedifyFeatureModule {}

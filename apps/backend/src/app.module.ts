@@ -1,15 +1,28 @@
-import { Module } from '@nestjs/common';
+import { Inject, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'node:path';
+import * as express from 'express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
-import { FedifyModule } from './fedify/fedify.module';
+import { FedifyFeatureModule } from './fedify/fedify.module';
+import { FEDIFY_FEDERATION, FedifyModule, integrateFederation } from '@fedify/nestjs';
+import { Federation, InProcessMessageQueue, MemoryKvStore } from '@fedify/fedify';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env'),
+        join(__dirname, '..', '.env.local'),
+      ],
+    }),
+    FedifyModule.forRoot({
+      kv: new MemoryKvStore(),
+      queue: new InProcessMessageQueue(),
+      origin: process.env.FEDIFY_BASE_URL || 'http://localhost:3001',
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -22,9 +35,32 @@ import { FedifyModule } from './fedify/fedify.module';
       synchronize: false,
     }),
     PostsModule,
-    FedifyModule,
+    FedifyFeatureModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor(
+    @Inject(FEDIFY_FEDERATION)
+    private federation: Federation<void>,
+  ) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    const origin = process.env.FEDIFY_BASE_URL || 'http://localhost:3001';
+    const fedifyMiddleware = integrateFederation(
+      this.federation,
+      async (req, res) => {
+        return {
+          request: req,
+          response: res,
+          url: new URL(req.url, origin),
+        };
+      },
+    );
+
+    consumer
+      .apply(express.raw({ type: '*/*' }), fedifyMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

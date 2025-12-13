@@ -17,6 +17,9 @@ importers:
       '@fedify/fedify':
         specifier: ^1.9.1
         version: 1.9.1(web-streams-polyfill@3.3.3)
+      '@fedify/nestjs':
+        specifier: ^1.9.1
+        version: 1.9.1(@fedify/fedify@1.9.1(web-streams-polyfill@3.3.3))(@nestjs/common@11.1.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(express@5.1.0)
       '@js-temporal/polyfill':
         specifier: ^0.5.1
         version: 0.5.1
@@ -35,6 +38,9 @@ importers:
       '@nestjs/typeorm':
         specifier: ^11.0.0
         version: 11.0.0(@nestjs/common@11.1.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(mysql2@3.15.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.12.1)(@types/node@22.15.31)(typescript@5.8.3)))
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       mysql2:
         specifier: ^3.15.3
         version: 3.15.3
@@ -494,6 +500,13 @@ packages:
   '@fedify/fedify@1.9.1':
     resolution: {integrity: sha512-MvR8E4hQGxkWPOhQfQeGVPPPJ3jC+crIin7WOA4O6HjAk1rPT8H/9rALuMEhoyDbly3xKVBi11Qo9XLHHGiUiA==}
     engines: {bun: '>=1.1.0', deno: '>=2.0.0', node: '>=22.0.0'}
+
+  '@fedify/nestjs@1.9.1':
+    resolution: {integrity: sha512-9ZKitcVR48uNspAsfqyMPthhNbchOylwYmwgEvGCp26RoHBQjOBuRIS9+v+uy/9MHOjL0zX0qdwTGKI/OJ8SkA==}
+    peerDependencies:
+      '@fedify/fedify': ^1.9.1
+      '@nestjs/common': ^11.0.1
+      express: ^4.0.0
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -5827,6 +5840,12 @@ snapshots:
     transitivePeerDependencies:
       - web-streams-polyfill
 
+  '@fedify/nestjs@1.9.1(@fedify/fedify@1.9.1(web-streams-polyfill@3.3.3))(@nestjs/common@11.1.3(reflect-metadata@0.2.2)(rxjs@7.8.2))(express@5.1.0)':
+    dependencies:
+      '@fedify/fedify': 1.9.1(web-streams-polyfill@3.3.3)
+      '@nestjs/common': 11.1.3(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      express: 5.1.0
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -7954,7 +7973,7 @@ snapshots:
 
   dotenv-expand@12.0.1:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv@16.4.7: {}
 

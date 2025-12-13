@@ -101,10 +101,30 @@ export class FedifyService implements OnModuleInit {
 
       // Accept 응답 발송
       const followerId = follow.actorId?.href;
+      const followingId = follow.objectId?.href;
       const follower = await this.actorService.getActorById(followerId || '');
 
-      if (follower?.inbox_url && follow.id?.href) {
-        await this.outboxService.sendAccept(ctx, follow.id.href, follower.inbox_url);
+      const actorIdentifier = (() => {
+        if (!followingId) {
+          return null;
+        }
+        try {
+          const url = new URL(followingId);
+          const parts = url.pathname.split('/').filter(Boolean);
+          return parts[parts.length - 1] ?? null;
+        } catch {
+          return null;
+        }
+      })();
+
+      if (followerId && follower?.inbox_url && follow.id?.href && actorIdentifier) {
+        await this.outboxService.sendAccept(
+          ctx,
+          follow.id.href,
+          followerId,
+          follower.inbox_url,
+          actorIdentifier,
+        );
       }
     });
 

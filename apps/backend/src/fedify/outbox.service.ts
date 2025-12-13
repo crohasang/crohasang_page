@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InboxService } from './inbox.service';
 import { ActorService } from './actor.service';
-import type { Context, Accept, Create, Note } from '@fedify/fedify';
+import { Accept, Create, type Context, type Note } from '@fedify/fedify';
 
 @Injectable()
 export class OutboxService {
@@ -17,21 +17,28 @@ export class OutboxService {
   async sendAccept(
     ctx: Context<void>,
     followActivityId: string,
+    followerId: string,
     followerInbox: string,
+    actorIdentifier: string,
   ): Promise<void> {
     try {
       console.log(`📤 Sending Accept to: ${followerInbox}`);
 
-      const accept = new ctx.Accept({
-        id: new URL(`#accepts/${Date.now()}`, ctx.getActorUri(ctx.data)),
-        actor: ctx.getActorUri(ctx.data),
+      const actorUri = ctx.getActorUri(actorIdentifier);
+
+      const accept = new Accept({
+        id: new URL(`#accepts/${Date.now()}`, actorUri),
+        actor: actorUri,
         object: new URL(followActivityId),
       });
 
       // 팔로워의 Inbox로 Accept 발송
       await ctx.sendActivity(
-        { identifier: ctx.data },
-        followerInbox,
+        { identifier: actorIdentifier },
+        {
+          id: new URL(followerId),
+          inboxId: new URL(followerInbox),
+        },
         accept,
       );
 
@@ -54,12 +61,18 @@ export class OutboxService {
     try {
       console.log(`📤 Sending Create activity for: ${note.id?.href}`);
 
-      const create = new ctx.Create({
-        id: new URL(`#creates/${Date.now()}`, note.id),
-        actor: new URL(actorId),
+      const actor = await this.actorService.getActorById(actorId);
+      if (!actor) {
+        throw new Error(`Actor not found: ${actorId}`);
+      }
+
+      const actorUri = ctx.getActorUri(actor.username);
+      const noteId = note.id ?? new URL(`#notes/${Date.now()}`, actorUri);
+
+      const create = new Create({
+        id: new URL(`#creates/${Date.now()}`, noteId),
+        actor: actorUri,
         object: note,
-        to: note.to,
-        cc: note.cc,
       });
 
       // 팔로워 목록 가져오기
@@ -76,8 +89,11 @@ export class OutboxService {
 
           if (followerActor?.inbox_url) {
             await ctx.sendActivity(
-              { identifier: ctx.data },
-              followerActor.inbox_url,
+              { identifier: actor.username },
+              {
+                id: new URL(follow.follower_id),
+                inboxId: new URL(followerActor.inbox_url),
+              },
               create,
             );
 

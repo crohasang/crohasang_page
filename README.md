@@ -1,11 +1,7 @@
 # crohasang_page
 > Webpage introducing myself
 
-## ✨ Features
-- Built with Next.js
-- Animated transitions and effects powered by Framer Motion
-- Explore my introduction, projects, and preferences (Music)
-
+- Built with Next.js and Nest.js
 
 
 ### If you're interested, please visit [crohasang.com](https://crohasang.com)

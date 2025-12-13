@@ -65,11 +65,11 @@ CREATE TABLE IF NOT EXISTS inbox_activities (
 );
 
 -- 인덱스 추가 (성능 최적화)
-CREATE INDEX IF NOT EXISTS idx_actors_username ON actors(username);
-CREATE INDEX IF NOT EXISTS idx_actors_is_local ON actors(is_local);
-CREATE INDEX IF NOT EXISTS idx_micro_posts_actor_id ON micro_posts(actor_id);
-CREATE INDEX IF NOT EXISTS idx_micro_posts_created_at ON micro_posts(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_follows_follower_id ON follows(follower_id);
-CREATE INDEX IF NOT EXISTS idx_follows_following_id ON follows(following_id);
-CREATE INDEX IF NOT EXISTS idx_inbox_activities_actor_id ON inbox_activities(actor_id);
-CREATE INDEX IF NOT EXISTS idx_inbox_activities_processed ON inbox_activities(processed);
+CREATE INDEX idx_actors_username ON actors(username);
+CREATE INDEX idx_actors_is_local ON actors(is_local);
+CREATE INDEX idx_micro_posts_actor_id ON micro_posts(actor_id);
+CREATE INDEX idx_micro_posts_created_at ON micro_posts(created_at DESC);
+CREATE INDEX idx_follows_follower_id ON follows(follower_id);
+CREATE INDEX idx_follows_following_id ON follows(following_id);
+CREATE INDEX idx_inbox_activities_actor_id ON inbox_activities(actor_id);
+CREATE INDEX idx_inbox_activities_processed ON inbox_activities(processed);

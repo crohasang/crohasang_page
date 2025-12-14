@@ -6,6 +6,7 @@ import * as express from 'express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
+import { MicroPostsModule } from './micro-posts/micro-posts.module';
 import { FedifyFeatureModule } from './fedify/fedify.module';
 import { FEDIFY_FEDERATION, FedifyModule, integrateFederation } from '@fedify/nestjs';
 import { Federation, InProcessMessageQueue, MemoryKvStore } from '@fedify/fedify';
@@ -35,6 +36,7 @@ import { Federation, InProcessMessageQueue, MemoryKvStore } from '@fedify/fedify
       synchronize: false,
     }),
     PostsModule,
+    MicroPostsModule,
     FedifyFeatureModule,
   ],
   controllers: [AppController],

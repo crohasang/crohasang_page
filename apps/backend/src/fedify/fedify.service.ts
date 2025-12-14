@@ -1,11 +1,14 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { Federation, Person, Follow, Undo } from '@fedify/fedify';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Federation, Person, Follow, Note, Undo } from '@fedify/fedify';
 import { FEDIFY_FEDERATION } from '@fedify/nestjs';
 import { Temporal } from '@js-temporal/polyfill';
 import { ActorService } from './actor.service';
 import { KeypairService } from './keypair.service';
 import { InboxService } from './inbox.service';
 import { OutboxService } from './outbox.service';
+import { MicroPost } from './entities/micro-post.entity';
 
 @Injectable()
 export class FedifyService implements OnModuleInit {
@@ -16,11 +19,49 @@ export class FedifyService implements OnModuleInit {
     private keypairService: KeypairService,
     private inboxService: InboxService,
     private outboxService: OutboxService,
+    @InjectRepository(MicroPost)
+    private microPostRepository: Repository<MicroPost>,
   ) {
     this.setupActorDispatcher();
+    this.setupObjectDispatcher();
     this.setupInboxListeners();
     this.setupOutbox();
     this.setupFollowersDispatcher();
+  }
+
+  private setupObjectDispatcher() {
+    this.federation.setObjectDispatcher(
+      Note,
+      '/users/{identifier}/notes/{id}',
+      async (ctx, { identifier, id }) => {
+        const actor = await this.actorService.getLocalActor(identifier);
+        if (!actor) {
+          return null;
+        }
+
+        const postId = Number(id);
+        if (!Number.isFinite(postId)) {
+          return null;
+        }
+
+        const post = await this.microPostRepository.findOne({
+          where: {
+            id: postId,
+            actor_id: actor.id,
+          },
+        });
+
+        if (!post) {
+          return null;
+        }
+
+        return new Note({
+          id: ctx.getObjectUri(Note, { identifier, id }),
+          attribution: new URL(actor.id),
+          content: post.content_html || post.content,
+        });
+      },
+    );
   }
 
   async onModuleInit() {
@@ -141,7 +182,7 @@ export class FedifyService implements OnModuleInit {
         return null;
       }
 
-      const activities = await this.outboxService.getOutboxActivities(actor.id);
+      const activities = await this.outboxService.getOutboxActivities(ctx, actor.id);
 
       return {
         items: activities,

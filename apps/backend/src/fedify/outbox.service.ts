@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { InboxService } from './inbox.service';
 import { ActorService } from './actor.service';
-import { Accept, Create, type Context, type Note } from '@fedify/fedify';
+import { Accept, Context, Create, Note } from '@fedify/fedify';
+import { MicroPost } from './entities/micro-post.entity';
 
 @Injectable()
 export class OutboxService {
   constructor(
     private inboxService: InboxService,
     private actorService: ActorService,
+    @InjectRepository(MicroPost)
+    private microPostRepository: Repository<MicroPost>,
   ) {}
 
   /**
@@ -119,9 +124,35 @@ export class OutboxService {
    * Outbox 조회
    * 액터의 공개 포스트 목록 반환
    */
-  async getOutboxActivities(actorId: string): Promise<any[]> {
-    // TODO: MicroPost 서비스가 구현되면 실제 포스트 조회
-    // 지금은 빈 배열 반환
-    return [];
+  async getOutboxActivities(ctx: Context<void>, actorId: string): Promise<any[]> {
+    const actor = await this.actorService.getActorById(actorId);
+    if (!actor?.username) {
+      return [];
+    }
+
+    const posts = await this.microPostRepository.find({
+      where: {
+        actor_id: actorId,
+        visibility: 'public',
+      },
+      order: { created_at: 'DESC' },
+      take: 20,
+    });
+
+    const actorUri = ctx.getActorUri(actor.username);
+
+    return posts.map((post) => {
+      const note = new Note({
+        id: ctx.getObjectUri(Note, { identifier: actor.username, id: String(post.id) }),
+        attribution: new URL(actorId),
+        content: post.content_html || post.content,
+      });
+
+      return new Create({
+        id: new URL(`#creates/${post.id}`, note.id ?? actorUri),
+        actor: actorUri,
+        object: note,
+      });
+    });
   }
 }

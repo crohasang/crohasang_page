@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { MicroPostsService } from './micro-posts.service';
+import { AdminTokenGuard } from '../auth/admin-token.guard';
 
 @Controller('micro-posts')
 export class MicroPostsController {
@@ -16,6 +17,7 @@ export class MicroPostsController {
   }
 
   @Post()
+  @UseGuards(AdminTokenGuard)
   create(@Body() body: { content: string; visibility?: string }) {
     return this.microPostsService.create({
       content: body.content,

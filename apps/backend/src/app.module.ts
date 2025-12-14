@@ -64,9 +64,10 @@ export class AppModule implements NestModule {
     consumer
       .apply(express.raw({ type: '*/*' }), fedifyMiddleware)
       .forRoutes(
-        { path: 'users*', method: RequestMethod.ALL },
-        { path: '.well-known*', method: RequestMethod.ALL },
-        { path: 'inbox*', method: RequestMethod.ALL },
+        { path: 'users/*path', method: RequestMethod.ALL },
+        { path: '.well-known/*path', method: RequestMethod.ALL },
+        { path: 'inbox', method: RequestMethod.ALL },
+        { path: 'inbox/*path', method: RequestMethod.ALL },
       );
   }
 }

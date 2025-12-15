@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InboxService } from './inbox.service';
 import { ActorService } from './actor.service';
-import { Accept, Context, Create, Note } from '@fedify/fedify';
+import { Accept, Context, Create, Follow, Note } from '@fedify/fedify';
 import { MicroPost } from './entities/micro-post.entity';
 
 @Injectable()
@@ -31,10 +31,18 @@ export class OutboxService {
 
       const actorUri = ctx.getActorUri(actorIdentifier);
 
+      // Some implementations expect the Accept.object to be a full Follow activity
+      // (not just an IRI), so include actor/object explicitly for compatibility.
+      const follow = new Follow({
+        id: new URL(followActivityId),
+        actor: new URL(followerId),
+        object: actorUri,
+      });
+
       const accept = new Accept({
         id: new URL(`#accepts/${Date.now()}`, actorUri),
         actor: actorUri,
-        object: new URL(followActivityId),
+        object: follow,
       });
 
       // 팔로워의 Inbox로 Accept 발송

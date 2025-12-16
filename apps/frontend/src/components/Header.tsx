@@ -65,6 +65,13 @@ export default function Header({ hideOnHome = false }: HeaderProps) {
               >
                 POST
               </Link>
+              <Link 
+                href="/fediverse" 
+                onClick={() => setIsOpen(false)}
+                className="text-lg font-semibold hover:text-blue-600 transition-colors"
+              >
+                FEDIVERSE
+              </Link>
             </nav>
           </SheetContent>
         </Sheet>

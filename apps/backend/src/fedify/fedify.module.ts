@@ -10,17 +10,21 @@ import { ActorService } from './actor.service';
 import { KeypairService } from './keypair.service';
 import { InboxService } from './inbox.service';
 import { OutboxService } from './outbox.service';
+import { FollowingService } from './following.service';
+import { FollowingController } from './following.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Actor, KeyPair, MicroPost, Follow, InboxActivity]),
   ],
+  controllers: [FollowingController],
   providers: [
     FedifyService,
     ActorService,
     KeypairService,
     InboxService,
     OutboxService,
+    FollowingService,
   ],
   exports: [
     FedifyService,
@@ -28,6 +32,7 @@ import { OutboxService } from './outbox.service';
     KeypairService,
     InboxService,
     OutboxService,
+    FollowingService,
   ],
 })
 export class FedifyFeatureModule {}

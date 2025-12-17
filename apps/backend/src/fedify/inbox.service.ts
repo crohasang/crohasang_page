@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Follow } from './entities/follow.entity';
 import { InboxActivity } from './entities/inbox-activity.entity';
 import { ActorService } from './actor.service';
-import { Context, Follow as FedifyFollow, Undo } from '@fedify/fedify';
+import { Accept, Context, Follow as FedifyFollow, Undo } from '@fedify/fedify';
 
 function isFollowActivity(obj: unknown): obj is FedifyFollow {
   return obj instanceof FedifyFollow;
@@ -90,6 +90,56 @@ export class InboxService {
       // Accept 응답은 OutboxService에서 처리
     } catch (error) {
       console.error('Error handling Follow activity:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Accept 액티비티 처리
+   * 내가 보낸 Follow 요청이 수락되었을 때
+   */
+  async handleAccept(ctx: Context<void>, accept: Accept): Promise<void> {
+    try {
+      const acceptActorId = accept.actorId?.href;
+      const acceptObject = await accept.getObject();
+
+      if (!acceptActorId || !acceptObject) {
+        console.error('Invalid Accept activity');
+        return;
+      }
+
+      // FK(inbox_activities.actor_id -> actors.id) 제약을 만족시키기 위해 원격 액터 upsert
+      await this.actorService.createOrUpdateRemoteActor({ id: acceptActorId });
+
+      if (isFollowActivity(acceptObject)) {
+        const followerId = acceptObject.actorId?.href;
+        const followingId = acceptObject.objectId?.href;
+
+        if (followerId && followingId) {
+          await this.followRepository.update(
+            {
+              follower_id: followerId,
+              following_id: followingId,
+            },
+            {
+              status: 'accepted',
+            },
+          );
+
+          console.log(`✅ Outgoing Follow accepted: ${followerId} -> ${followingId}`);
+        }
+      }
+
+      await this.inboxActivityRepository.save({
+        activity_id: accept.id?.href || `accept-${Date.now()}`,
+        type: 'Accept',
+        actor_id: acceptActorId,
+        object_id: acceptObject.id?.href,
+        raw_data: accept,
+        processed: true,
+      });
+    } catch (error) {
+      console.error('Error handling Accept activity:', error);
       throw error;
     }
   }

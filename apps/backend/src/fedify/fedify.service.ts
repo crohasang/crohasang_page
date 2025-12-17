@@ -1,7 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Federation, Person, Follow, Note, Undo } from '@fedify/fedify';
+import { Accept, Federation, Person, Follow, Note, Undo } from '@fedify/fedify';
 import { FEDIFY_FEDERATION } from '@fedify/nestjs';
 import { Temporal } from '@js-temporal/polyfill';
 import { ActorService } from './actor.service';
@@ -167,6 +167,11 @@ export class FedifyService implements OnModuleInit {
     // Undo 액티비티 처리
     inboxListeners.on(Undo, async (ctx, undo) => {
       await this.inboxService.handleUndo(ctx, undo);
+    });
+
+    // Accept 액티비티 처리 (내가 보낸 Follow가 수락되었을 때)
+    inboxListeners.on(Accept, async (ctx, accept) => {
+      await this.inboxService.handleAccept(ctx, accept);
     });
   }
 

@@ -27,6 +27,7 @@ export class FedifyService implements OnModuleInit {
     this.setupInboxListeners();
     this.setupOutbox();
     this.setupFollowersDispatcher();
+    this.setupFollowingDispatcher();
   }
 
   private setupObjectDispatcher() {
@@ -104,6 +105,7 @@ export class FedifyService implements OnModuleInit {
           inbox: ctx.getInboxUri(identifier),
           outbox: ctx.getOutboxUri(identifier),
           followers: ctx.getFollowersUri(identifier),
+          following: ctx.getFollowingUri(identifier),
           url: new URL(actor.url || ''),
           published: actor.created_at
             ? Temporal.Instant.fromEpochMilliseconds(actor.created_at.getTime())
@@ -244,6 +246,46 @@ export class FedifyService implements OnModuleInit {
         }
         const follows = await this.inboxService.getFollowers(actor.id);
         return follows.length;
+      });
+  }
+
+  /**
+   * Following Dispatcher 설정
+   * 팔로잉 목록 제공
+   */
+  private setupFollowingDispatcher() {
+    this.federation
+      .setFollowingDispatcher(
+        '/users/{identifier}/following',
+        async (ctx, identifier, cursor) => {
+          const actor = await this.actorService.getLocalActor(identifier);
+
+          if (!actor) {
+            return null;
+          }
+
+          const following = await this.inboxService.getFollowing(actor.id);
+
+          const recipients = await Promise.all(
+            following.map(async (f) => {
+              // 팔로잉하는 대상(following_id)이 원격일 수도 있음
+              // 여기서는 ID만 반환하거나, 필요한 경우 ActorService를 통해 조회
+              return new URL(f.following_id);
+            }),
+          );
+
+          return {
+            items: recipients,
+          };
+        },
+      )
+      .setCounter(async (ctx, identifier) => {
+        const actor = await this.actorService.getLocalActor(identifier);
+        if (!actor) {
+          return 0;
+        }
+        const following = await this.inboxService.getFollowing(actor.id);
+        return following.length;
       });
   }
 }

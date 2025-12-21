@@ -7,13 +7,11 @@ export class FollowingController {
   constructor(private readonly followingService: FollowingService) {}
 
   @Get('following')
-  @UseGuards(AdminTokenGuard)
   async getFollowing(@Query('status') status?: string) {
     return this.followingService.getFollowingList(status);
   }
 
   @Get('followers')
-  @UseGuards(AdminTokenGuard)
   async getFollowers(@Query('status') status?: string) {
     return this.followingService.getFollowersList(status);
   }

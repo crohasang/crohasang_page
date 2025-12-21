@@ -29,4 +29,10 @@ export class FollowingController {
   async unfollow(@Body() body: { target: string }) {
     return this.followingService.unfollow(body.target);
   }
+
+  @Get('timeline')
+  async getTimeline(@Query('limit') limit?: string) {
+    const limitNum = limit ? parseInt(limit, 10) : 50;
+    return this.followingService.getTimeline(limitNum);
+  }
 }

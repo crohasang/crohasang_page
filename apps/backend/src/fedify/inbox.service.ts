@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Follow } from './entities/follow.entity';
 import { InboxActivity } from './entities/inbox-activity.entity';
 import { ActorService } from './actor.service';
-import { Accept, Context, Follow as FedifyFollow, Undo } from '@fedify/fedify';
+import { Accept, Context, Create, Follow as FedifyFollow, Undo } from '@fedify/fedify';
 
 function isFollowActivity(obj: unknown): obj is FedifyFollow {
   return obj instanceof FedifyFollow;
@@ -187,6 +187,61 @@ export class InboxService {
       });
     } catch (error) {
       console.error('Error handling Undo activity:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create 액티비티 처리 (팔로우하는 계정의 글 작성)
+   */
+  async handleCreate(ctx: Context<void>, create: Create): Promise<void> {
+    try {
+      const actorId = create.actorId?.href;
+      const createObject = await create.getObject();
+
+      if (!actorId || !createObject) {
+        console.error('Invalid Create activity: missing actor or object');
+        return;
+      }
+
+      // 1. 이 글을 쓴 사람(actorId)을 내가(crohasang) 팔로우하고 있는지 확인
+      const localActor = await this.actorService.getLocalActor('crohasang');
+      if (!localActor) {
+        return;
+      }
+
+      const follow = await this.followRepository.findOne({
+        where: {
+          follower_id: localActor.id,
+          following_id: actorId,
+          status: 'accepted',
+        },
+      });
+
+      // 팔로우 중이 아니면 무시 (내 타임라인에 저장 안 함)
+      if (!follow) {
+        // console.log(`Ignoring Create from non-followed actor: ${actorId}`);
+        return;
+      }
+
+      console.log(`📥 Received Create from followed actor: ${actorId}`);
+
+      // 2. 보낸 사람 정보 최신화 (프로필 사진 등 변경되었을 수 있으므로)
+      await this.actorService.createOrUpdateRemoteActor({ id: actorId });
+
+      // 3. DB에 저장 (InboxActivity)
+      // 나중에 이 테이블을 조회해서 타임라인을 보여줌
+      await this.inboxActivityRepository.save({
+        activity_id: create.id?.href || `create-${Date.now()}`,
+        type: 'Create',
+        actor_id: actorId,
+        object_id: createObject.id?.href,
+        raw_data: create,
+        processed: false, // 추후 알림 처리 등을 위해 false로 둠
+      });
+
+    } catch (error) {
+      console.error('Error handling Create activity:', error);
       throw error;
     }
   }

@@ -335,4 +335,41 @@ export class FollowingService {
       },
     });
   }
+
+  /**
+   * 팔로잉 타임라인 조회 (Simple version: Create 액티비티만)
+   */
+  async getTimeline(limit: number = 50) {
+    const timelineItems = await this.inboxActivityRepository.find({
+      where: {
+        type: 'Create',
+      },
+      order: {
+        created_at: 'DESC',
+      },
+      take: limit,
+      relations: {
+        actor: true,
+      },
+    });
+
+    return timelineItems.map((item) => ({
+      id: item.id,
+      activity_id: item.activity_id,
+      type: item.type,
+      actor_id: item.actor_id,
+      object_id: item.object_id,
+      created_at: item.created_at,
+      actor: item.actor
+        ? {
+            id: item.actor.id,
+            username: item.actor.username,
+            display_name: item.actor.display_name,
+            url: item.actor.url,
+            type: item.actor.type,
+          }
+        : null,
+      raw_data: item.raw_data,
+    }));
+  }
 }

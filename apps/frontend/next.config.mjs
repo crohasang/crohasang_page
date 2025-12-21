@@ -17,6 +17,7 @@ const nextConfig = {
       { source: '/inbox/:path*', destination: `${backend}/inbox/:path*` },
       { source: '/micro-posts', destination: `${backend}/micro-posts` },
       { source: '/micro-posts/:path*', destination: `${backend}/micro-posts/:path*` },
+      { source: '/fedify/:path*', destination: `${backend}/fedify/:path*` },
     ];
   },
 };

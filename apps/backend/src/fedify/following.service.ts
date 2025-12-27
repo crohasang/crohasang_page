@@ -49,6 +49,11 @@ export class FollowingService {
 
     const { timeoutMs: _timeoutMs, retries: _retries, retryDelayMs: _retryDelayMs, ...requestInit } = init;
 
+    const headers = new Headers(requestInit.headers);
+    if (!headers.has('user-agent')) {
+      headers.set('user-agent', 'CrohasangPage/1.0 (+https://crohasang.com/)');
+    }
+
     let lastError: unknown;
     for (let attempt = 0; attempt <= retries; attempt++) {
       const controller = new AbortController();
@@ -57,6 +62,7 @@ export class FollowingService {
       try {
         const res = await fetch(url, {
           ...requestInit,
+          headers,
           signal: controller.signal,
         });
         clearTimeout(timer);

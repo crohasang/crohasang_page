@@ -41,9 +41,17 @@ export function TimelineFeed({ timeline }: TimelineFeedProps) {
               >
                 {/* Avatar */}
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                    {item.actor?.username?.[0]?.toUpperCase() || '?'}
-                  </div>
+                  {item.actor?.avatar_url ? (
+                    <img
+                      src={item.actor.avatar_url}
+                      alt={item.actor.display_name || item.actor.username || 'Avatar'}
+                      className="w-12 h-12 rounded-full object-cover shadow-inner"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                      {item.actor?.username?.[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
                 </div>
 
                 {/* Content */}

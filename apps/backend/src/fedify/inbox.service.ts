@@ -108,26 +108,57 @@ export class InboxService {
         return;
       }
 
+      console.log(`📥 Received Accept from: ${acceptActorId}`);
+
       // FK(inbox_activities.actor_id -> actors.id) 제약을 만족시키기 위해 원격 액터 upsert
       await this.actorService.createOrUpdateRemoteActor({ id: acceptActorId });
 
+      let followerId: string | undefined;
+      let followingId: string | undefined;
+
+      // Accept의 object가 Follow 객체인 경우
       if (isFollowActivity(acceptObject)) {
-        const followerId = acceptObject.actorId?.href;
-        const followingId = acceptObject.objectId?.href;
+        followerId = acceptObject.actorId?.href;
+        followingId = acceptObject.objectId?.href;
+      } 
+      // Accept의 object가 URL만 있는 경우 (Follow ID)
+      else if (acceptObject.id?.href) {
+        // OutgoingFollow에서 해당 Follow 찾기
+        const outgoingFollow = await this.inboxActivityRepository.findOne({
+          where: {
+            activity_id: acceptObject.id.href,
+            type: 'OutgoingFollow',
+          },
+        });
 
-        if (followerId && followingId) {
-          await this.followRepository.update(
-            {
-              follower_id: followerId,
-              following_id: followingId,
-            },
-            {
-              status: 'accepted',
-            },
-          );
-
-          console.log(`✅ Outgoing Follow accepted: ${followerId} -> ${followingId}`);
+        if (outgoingFollow) {
+          followerId = outgoingFollow.actor_id;
+          followingId = outgoingFollow.object_id ?? undefined;
         }
+      }
+
+      // followerId와 followingId를 못 찾았으면, Accept한 사람이 following이라고 추정
+      if (!followerId || !followingId) {
+        console.log(`⚠️ Could not extract Follow info from Accept, using fallback logic`);
+        const localActor = await this.actorService.getLocalActor('crohasang');
+        if (localActor) {
+          followerId = localActor.id;
+          followingId = acceptActorId;
+        }
+      }
+
+      if (followerId && followingId) {
+        const result = await this.followRepository.update(
+          {
+            follower_id: followerId,
+            following_id: followingId,
+          },
+          {
+            status: 'accepted',
+          },
+        );
+
+        console.log(`✅ Outgoing Follow accepted: ${followerId} -> ${followingId} (affected: ${result.affected})`);
       }
 
       await this.inboxActivityRepository.save({
@@ -135,7 +166,7 @@ export class InboxService {
         type: 'Accept',
         actor_id: acceptActorId,
         object_id: acceptObject.id?.href,
-        raw_data: accept,
+        raw_data: JSON.parse(JSON.stringify(accept)),
         processed: true,
       });
     } catch (error) {

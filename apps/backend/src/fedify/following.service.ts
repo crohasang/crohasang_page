@@ -43,9 +43,9 @@ export class FollowingService {
       retryDelayMs?: number;
     } = {},
   ): Promise<{ ok: boolean; status: number; json: T } | { ok: false; status: number; text: string }> {
-    const timeoutMs = init.timeoutMs ?? 8000;
-    const retries = init.retries ?? 2;
-    const retryDelayMs = init.retryDelayMs ?? 250;
+    const timeoutMs = init.timeoutMs ?? 3000;
+    const retries = init.retries ?? 3;
+    const retryDelayMs = init.retryDelayMs ?? 500;
 
     const { timeoutMs: _timeoutMs, retries: _retries, retryDelayMs: _retryDelayMs, ...requestInit } = init;
 
@@ -115,8 +115,9 @@ export class FollowingService {
     const result = await this.fetchJsonWithRetry<WebFingerResponse>(webfingerUrl, {
       cache: 'no-store',
       headers: { Accept: 'application/jrd+json, application/json' },
-      timeoutMs: 8000,
-      retries: 2,
+      timeoutMs: 3000,
+      retries: 3,
+      retryDelayMs: 500,
     });
 
     if (!result.ok) {
@@ -145,8 +146,9 @@ export class FollowingService {
       headers: {
         Accept: 'application/activity+json',
       },
-      timeoutMs: 8000,
-      retries: 2,
+      timeoutMs: 3000,
+      retries: 3,
+      retryDelayMs: 500,
     });
 
     if (!result.ok) {

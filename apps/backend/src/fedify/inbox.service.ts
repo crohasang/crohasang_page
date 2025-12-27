@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Follow } from './entities/follow.entity';
 import { InboxActivity } from './entities/inbox-activity.entity';
 import { ActorService } from './actor.service';
-import { Accept, Context, Create, Follow as FedifyFollow, Undo } from '@fedify/fedify';
+import { Accept, Context, Create, Follow as FedifyFollow, Person, Undo } from '@fedify/fedify';
 
 function isFollowActivity(obj: unknown): obj is FedifyFollow {
   return obj instanceof FedifyFollow;
@@ -45,6 +45,17 @@ export class InboxService {
       // 팔로워 정보 가져오기 (원격 액터)
       const followerActor = await follow.getActor();
       if (followerActor) {
+        let iconUrl: string | undefined = undefined;
+        if (followerActor instanceof Person) {
+          const icon = await followerActor.getIcon();
+          if (icon?.url) {
+            if (typeof icon.url === 'string') {
+              iconUrl = icon.url;
+            } else if (icon.url instanceof URL) {
+              iconUrl = icon.url.href;
+            }
+          }
+        }
         await this.actorService.createOrUpdateRemoteActor({
           id: followerId,
           username:
@@ -55,7 +66,7 @@ export class InboxService {
           bio: followerActor.summary?.toString(),
           inbox_url: followerActor.inboxId?.href,
           url: followerActor.url ? String(followerActor.url.href) : undefined,
-          avatar_url: followerActor.icon?.url?.href,
+          avatar_url: iconUrl,
           type: 'Person',
         });
       }
@@ -264,6 +275,17 @@ export class InboxService {
       // 2. 보낸 사람 정보 최신화 (프로필 사진 등 변경되었을 수 있으므로)
       const creatorActor = await create.getActor();
       if (creatorActor) {
+        let iconUrl: string | undefined = undefined;
+        if (creatorActor instanceof Person) {
+          const icon = await creatorActor.getIcon();
+          if (icon?.url) {
+            if (typeof icon.url === 'string') {
+              iconUrl = icon.url;
+            } else if (icon.url instanceof URL) {
+              iconUrl = icon.url.href;
+            }
+          }
+        }
         await this.actorService.createOrUpdateRemoteActor({
           id: actorId,
           username:
@@ -274,7 +296,7 @@ export class InboxService {
           bio: creatorActor.summary?.toString(),
           inbox_url: creatorActor.inboxId?.href,
           url: creatorActor.url ? String(creatorActor.url.href) : undefined,
-          avatar_url: creatorActor.icon?.url?.href,
+          avatar_url: iconUrl,
           type: 'Person',
         });
       }

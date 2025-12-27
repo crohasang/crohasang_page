@@ -43,6 +43,7 @@ export class OutboxService {
         id: new URL(`#accepts/${Date.now()}`, actorUri),
         actor: actorUri,
         object: follow,
+        to: new URL(followerId), // 수신자 명시
       });
 
       // 팔로워의 Inbox로 Accept 발송
@@ -88,40 +89,16 @@ export class OutboxService {
         object: note,
       });
 
-      // 팔로워 목록 가져오기
-      const followers = await this.inboxService.getFollowers(actorId);
+      // Fedify가 권장하는 방식: "followers" 문자열 사용
+      // 이렇게 하면 Fedify가 자동으로 followers collection을 조회하고
+      // 효율적으로 전송합니다
+      await ctx.sendActivity(
+        { identifier: actor.username },
+        "followers",
+        create,
+      );
 
-      console.log(`📤 Sending to ${followers.length} followers`);
-
-      // 각 팔로워의 Inbox로 발송
-      for (const follow of followers) {
-        try {
-          const followerActor = await this.actorService.getActorById(
-            follow.follower_id,
-          );
-
-          if (followerActor?.inbox_url) {
-            await ctx.sendActivity(
-              { identifier: actor.username },
-              {
-                id: new URL(follow.follower_id),
-                inboxId: new URL(followerActor.inbox_url),
-              },
-              create,
-            );
-
-            console.log(`✅ Sent to: ${followerActor.inbox_url}`);
-          }
-        } catch (error) {
-          console.error(
-            `Failed to send to follower ${follow.follower_id}:`,
-            error,
-          );
-          // 개별 실패는 무시하고 계속 진행
-        }
-      }
-
-      console.log(`✅ Create activity sent to ${followers.length} followers`);
+      console.log(`✅ Create activity sent to followers`);
     } catch (error) {
       console.error('Error sending Create activity:', error);
       throw error;

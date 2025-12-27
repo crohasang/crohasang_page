@@ -425,6 +425,7 @@ export class FollowingService {
             username: item.actor.username,
             display_name: item.actor.display_name,
             url: item.actor.url,
+            avatar_url: item.actor.avatar_url,
             type: item.actor.type,
           }
         : null,

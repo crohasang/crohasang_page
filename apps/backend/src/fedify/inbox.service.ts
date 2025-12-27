@@ -55,17 +55,19 @@ export class InboxService {
           bio: followerActor.summary?.toString(),
           inbox_url: followerActor.inboxId?.href,
           url: followerActor.url ? String(followerActor.url.href) : undefined,
+          avatar_url: followerActor.icon?.url?.href,
           type: 'Person',
         });
       }
 
       // Inbox 활동 로그 저장
+      const followJson = await follow.toJsonLd({ contextLoader: ctx.contextLoader });
       await this.inboxActivityRepository.save({
         activity_id: follow.id?.href || `follow-${Date.now()}`,
         type: 'Follow',
         actor_id: followerId,
         object_id: followingId,
-        raw_data: follow,
+        raw_data: followJson,
         processed: false,
       });
 
@@ -161,12 +163,13 @@ export class InboxService {
         console.log(`✅ Outgoing Follow accepted: ${followerId} -> ${followingId} (affected: ${result.affected})`);
       }
 
+      const acceptJson = await accept.toJsonLd({ contextLoader: ctx.contextLoader });
       await this.inboxActivityRepository.save({
         activity_id: accept.id?.href || `accept-${Date.now()}`,
         type: 'Accept',
         actor_id: acceptActorId,
         object_id: acceptObject.id?.href,
-        raw_data: JSON.parse(JSON.stringify(accept)),
+        raw_data: acceptJson,
         processed: true,
       });
     } catch (error) {
@@ -208,12 +211,13 @@ export class InboxService {
         }
       }
 
+      const undoJson = await undo.toJsonLd({ contextLoader: ctx.contextLoader });
       await this.inboxActivityRepository.save({
         activity_id: undo.id?.href || `undo-${Date.now()}`,
         type: 'Undo',
         actor_id: actorId,
         object_id: undoObject.id?.href,
-        raw_data: undo,
+        raw_data: undoJson,
         processed: true,
       });
     } catch (error) {
@@ -258,16 +262,32 @@ export class InboxService {
       console.log(`📥 Received Create from followed actor: ${actorId}`);
 
       // 2. 보낸 사람 정보 최신화 (프로필 사진 등 변경되었을 수 있으므로)
-      await this.actorService.createOrUpdateRemoteActor({ id: actorId });
+      const creatorActor = await create.getActor();
+      if (creatorActor) {
+        await this.actorService.createOrUpdateRemoteActor({
+          id: actorId,
+          username:
+            typeof creatorActor.preferredUsername === 'string'
+              ? creatorActor.preferredUsername
+              : creatorActor.preferredUsername?.toString(),
+          display_name: creatorActor.name?.toString(),
+          bio: creatorActor.summary?.toString(),
+          inbox_url: creatorActor.inboxId?.href,
+          url: creatorActor.url ? String(creatorActor.url.href) : undefined,
+          avatar_url: creatorActor.icon?.url?.href,
+          type: 'Person',
+        });
+      }
 
       // 3. DB에 저장 (InboxActivity)
       // 나중에 이 테이블을 조회해서 타임라인을 보여줌
+      const createJson = await create.toJsonLd({ contextLoader: ctx.contextLoader });
       await this.inboxActivityRepository.save({
         activity_id: create.id?.href || `create-${Date.now()}`,
         type: 'Create',
         actor_id: actorId,
         object_id: createObject.id?.href,
-        raw_data: create,
+        raw_data: createJson,
         processed: false, // 추후 알림 처리 등을 위해 false로 둠
       });
 

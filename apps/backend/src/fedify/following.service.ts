@@ -21,6 +21,10 @@ type RemoteActorJson = {
   name?: string;
   summary?: string;
   url?: string;
+  icon?: {
+    url?: string;
+    mediaType?: string;
+  };
 };
 
 @Injectable()
@@ -190,6 +194,7 @@ export class FollowingService {
       inbox_url: inboxUrl ?? undefined,
       shared_inbox_url: sharedInboxUrl ?? undefined,
       url: typeof remote.url === 'string' ? remote.url : actorUrl,
+      avatar_url: remote.icon?.url ?? undefined,
       type: 'Person',
     });
 
@@ -242,17 +247,13 @@ export class FollowingService {
 
     if (follow.id?.href) {
       try {
+        const followJson = await follow.toJsonLd({ contextLoader: ctx.contextLoader });
         await this.inboxActivityRepository.save({
           activity_id: follow.id.href,
           type: 'OutgoingFollow',
           actor_id: localActor.id,
           object_id: remoteId,
-          raw_data: {
-            type: 'Follow',
-            id: follow.id.href,
-            actor: actorUri.href,
-            object: remoteId,
-          },
+          raw_data: followJson,
           processed: true,
         });
       } catch {
@@ -324,17 +325,13 @@ export class FollowingService {
 
     if (undo.id?.href) {
       try {
+        const undoJson = await undo.toJsonLd({ contextLoader: ctx.contextLoader });
         await this.inboxActivityRepository.save({
           activity_id: undo.id.href,
           type: 'OutgoingUndo',
           actor_id: localActor.id,
           object_id: followActivity.activity_id,
-          raw_data: {
-            type: 'Undo',
-            id: undo.id.href,
-            actor: actorUri.href,
-            object: followActivity.activity_id,
-          },
+          raw_data: undoJson,
           processed: true,
         });
       } catch {

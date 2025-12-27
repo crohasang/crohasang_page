@@ -93,9 +93,8 @@ export class FedifyService implements OnModuleInit {
           return null;
         }
 
-        // 필요 시 키 쌍을 미리 확보 (publicKey, assertionMethods 등에 활용 가능)
-        const keyPairs = await this.keypairService.ensureKeyPairs(actor.id);
-        void keyPairs; // 현재는 사용하지 않지만, 추후 Person 속성에 활용 가능
+        // Fedify가 제공하는 getActorKeyPairs를 사용하여 키 가져오기
+        const keys = await ctx.getActorKeyPairs(identifier);
 
         return new Person({
           id: ctx.getActorUri(identifier),
@@ -110,6 +109,9 @@ export class FedifyService implements OnModuleInit {
           published: actor.created_at
             ? Temporal.Instant.fromEpochMilliseconds(actor.created_at.getTime())
             : null,
+          // 중요: publicKey와 assertionMethods 설정
+          publicKey: keys[0]?.cryptographicKey,
+          assertionMethods: keys.map((key) => key.multikey),
         });
       })
       .setKeyPairsDispatcher(async (ctx, identifier) => {

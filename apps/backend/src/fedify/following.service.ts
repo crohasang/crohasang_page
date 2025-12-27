@@ -228,6 +228,7 @@ export class FollowingService {
       id: new URL(`#follows/${Date.now()}`, actorUri),
       actor: actorUri,
       object: new URL(remoteId),
+      to: new URL(remoteId), // 수신자 명시
     });
 
     await ctx.sendActivity(
@@ -304,6 +305,7 @@ export class FollowingService {
       id: new URL(`#undo/${Date.now()}`, actorUri),
       actor: actorUri,
       object: follow,
+      to: new URL(remoteId), // 수신자 명시
     });
 
     await ctx.sendActivity(

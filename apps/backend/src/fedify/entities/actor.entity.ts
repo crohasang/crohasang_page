@@ -29,6 +29,9 @@ export class Actor {
   @Column({ type: 'text', nullable: true })
   url: string;
 
+  @Column({ type: 'text', nullable: true })
+  avatar_url: string;
+
   @Column({ type: 'varchar', length: 50, default: 'Person' })
   type: string; // 'Person', 'Service', etc.
 

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS actors (
   inbox_url TEXT,
   shared_inbox_url TEXT,
   url TEXT,
+  avatar_url TEXT,
   type VARCHAR(50) DEFAULT 'Person',
   is_local BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

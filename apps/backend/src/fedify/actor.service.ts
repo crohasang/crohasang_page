@@ -43,6 +43,7 @@ export class ActorService {
     inbox_url?: string;
     shared_inbox_url?: string;
     url?: string;
+    avatar_url?: string;
     type?: string;
   }): Promise<Actor> {
     const existingActor = await this.getActorById(actorData.id);

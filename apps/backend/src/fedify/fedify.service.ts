@@ -1,7 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Accept, Create, Federation, Person, Follow, Note, Undo } from '@fedify/fedify';
+import { Accept, Create, Federation, Person, Follow, Note, Undo, Image } from '@fedify/fedify';
 import { FEDIFY_FEDERATION } from '@fedify/nestjs';
 import { Temporal } from '@js-temporal/polyfill';
 import { ActorService } from './actor.service';
@@ -60,6 +60,7 @@ export class FedifyService implements OnModuleInit {
           id: ctx.getObjectUri(Note, { identifier, id }),
           attribution: new URL(actor.id),
           content: post.content_html || post.content,
+          published: Temporal.Instant.fromEpochMilliseconds(post.created_at.getTime()),
         });
       },
     );
@@ -106,6 +107,9 @@ export class FedifyService implements OnModuleInit {
           followers: ctx.getFollowersUri(identifier),
           following: ctx.getFollowingUri(identifier),
           url: new URL(actor.url || ''),
+          icon: actor.avatar_url
+            ? new Image({ url: new URL(actor.avatar_url), mediaType: 'image/jpeg' })
+            : undefined,
           published: actor.created_at
             ? Temporal.Instant.fromEpochMilliseconds(actor.created_at.getTime())
             : null,

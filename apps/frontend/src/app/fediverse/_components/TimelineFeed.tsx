@@ -27,12 +27,15 @@ export function TimelineFeed({ timeline }: TimelineFeedProps) {
 
             const published = item.raw_data?.object?.published
               ? new Date(item.raw_data.object.published).toLocaleString('ko-KR', {
+                  timeZone: 'Asia/Seoul',
                   month: 'short',
                   day: 'numeric',
                   hour: 'numeric',
                   minute: 'numeric',
                 })
-              : new Date(item.created_at).toLocaleString('ko-KR');
+              : new Date(item.created_at).toLocaleString('ko-KR', {
+                  timeZone: 'Asia/Seoul',
+                });
 
             return (
               <article

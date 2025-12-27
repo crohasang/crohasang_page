@@ -35,6 +35,54 @@ export class FollowingService {
     private federation: Federation<void>,
   ) {}
 
+  private async fetchJsonWithRetry<T>(
+    url: string,
+    init: RequestInit & {
+      timeoutMs?: number;
+      retries?: number;
+      retryDelayMs?: number;
+    } = {},
+  ): Promise<{ ok: boolean; status: number; json: T } | { ok: false; status: number; text: string }> {
+    const timeoutMs = init.timeoutMs ?? 8000;
+    const retries = init.retries ?? 2;
+    const retryDelayMs = init.retryDelayMs ?? 250;
+
+    const { timeoutMs: _timeoutMs, retries: _retries, retryDelayMs: _retryDelayMs, ...requestInit } = init;
+
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const res = await fetch(url, {
+          ...requestInit,
+          signal: controller.signal,
+        });
+        clearTimeout(timer);
+
+        if (!res.ok) {
+          const text = await res.text();
+          return { ok: false, status: res.status, text };
+        }
+
+        const json = (await res.json()) as T;
+        return { ok: true, status: res.status, json };
+      } catch (err) {
+        clearTimeout(timer);
+        lastError = err;
+
+        if (attempt >= retries) {
+          throw err;
+        }
+
+        await new Promise((r) => setTimeout(r, retryDelayMs * Math.pow(2, attempt)));
+      }
+    }
+
+    throw lastError;
+  }
+
   private normalizeTarget(target: string) {
     const t = target.trim();
     if (t.startsWith('http://') || t.startsWith('https://')) {
@@ -58,16 +106,18 @@ export class FollowingService {
       `${username}@${domain}`,
     )}`;
 
-    const res = await fetch(webfingerUrl, {
+    const result = await this.fetchJsonWithRetry<WebFingerResponse>(webfingerUrl, {
       cache: 'no-store',
       headers: { Accept: 'application/jrd+json, application/json' },
+      timeoutMs: 8000,
+      retries: 2,
     });
 
-    if (!res.ok) {
-      throw new Error(`WebFinger lookup failed: ${res.status}`);
+    if (!result.ok) {
+      throw new Error(`WebFinger lookup failed: ${result.status}`);
     }
 
-    const data = (await res.json()) as WebFingerResponse;
+    const data = result.json;
     const selfLink = data.links?.find(
       (l) =>
         l.rel === 'self' &&
@@ -84,18 +134,20 @@ export class FollowingService {
   }
 
   private async fetchRemoteActor(actorUrl: string): Promise<RemoteActorJson> {
-    const res = await fetch(actorUrl, {
+    const result = await this.fetchJsonWithRetry<RemoteActorJson>(actorUrl, {
       cache: 'no-store',
       headers: {
         Accept: 'application/activity+json',
       },
+      timeoutMs: 8000,
+      retries: 2,
     });
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch remote actor: ${res.status}`);
+    if (!result.ok) {
+      throw new Error(`Failed to fetch remote actor: ${result.status}`);
     }
 
-    return (await res.json()) as RemoteActorJson;
+    return result.json;
   }
 
   private async resolveRemote(target: string): Promise<{ remoteId: string; inbox: string; actorUrl: string }> {

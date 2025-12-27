@@ -59,6 +59,7 @@ export type FollowRelation = {
     username?: string;
     display_name?: string;
     url?: string;
+    avatar_url?: string;
     type: string;
   };
   following?: {
@@ -66,6 +67,7 @@ export type FollowRelation = {
     username?: string;
     display_name?: string;
     url?: string;
+    avatar_url?: string;
     type: string;
   };
 };

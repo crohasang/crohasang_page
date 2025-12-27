@@ -21,9 +21,17 @@ export function FollowLists({ followingList, followersList }: FollowListsProps) 
 
               return (
                 <div key={follow.id} className="flex items-center gap-3 p-2 rounded hover:bg-gray-50">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold">
-                    {account.username?.[0]?.toUpperCase() || '?'}
-                  </div>
+                  {account.avatar_url ? (
+                    <img
+                      src={account.avatar_url}
+                      alt={account.display_name || account.username || 'Avatar'}
+                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold">
+                      {account.username?.[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900 truncate text-sm">
                       {account.display_name || account.username || 'Unknown'}
@@ -60,9 +68,17 @@ export function FollowLists({ followingList, followersList }: FollowListsProps) 
 
               return (
                 <div key={follow.id} className="flex items-center gap-3 p-2 rounded hover:bg-gray-50">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white font-bold">
-                    {account.username?.[0]?.toUpperCase() || '?'}
-                  </div>
+                  {account.avatar_url ? (
+                    <img
+                      src={account.avatar_url}
+                      alt={account.display_name || account.username || 'Avatar'}
+                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white font-bold">
+                      {account.username?.[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900 truncate text-sm">
                       {account.display_name || account.username || 'Unknown'}
